@@ -8,7 +8,7 @@ import (
 
 	"github.com/uilianlago/API-To-Do-List/application/entities"
 	"github.com/uilianlago/API-To-Do-List/application/usecases"
-	"github.com/uilianlago/API-To-Do-List/infra/db/inmemory/repositories"
+	repositories "github.com/uilianlago/API-To-Do-List/tests/repositories/inmemory"
 )
 
 func MainHandler(w http.ResponseWriter, r *http.Request) {

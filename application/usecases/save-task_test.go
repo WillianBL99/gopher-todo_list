@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/uilianlago/API-To-Do-List/infra/db/inmemory/repositories"
+	repositories "github.com/uilianlago/API-To-Do-List/tests/repositories/inmemory"
 )
 
 func TestSaveTask(t *testing.T) {
