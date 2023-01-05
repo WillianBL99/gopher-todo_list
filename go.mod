@@ -1,4 +1,4 @@
-module github.com/uilianlago/API-To-Do-List
+module github.com/willianbl99/todo-list_api
 
 go 1.18
 

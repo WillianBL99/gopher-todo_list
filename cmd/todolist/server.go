@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/uilianlago/API-To-Do-List/application/entities"
 	"github.com/uilianlago/API-To-Do-List/application/usecases"
 	repositories "github.com/uilianlago/API-To-Do-List/tests/repositories/inmemory"
+	"github.com/willianbl99/todo-list_api/pkg/application/entity"
 )
 
 func MainHandler(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +18,7 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", MainHandler)
 
-	repository := repositories.InMemoryToDoListRepository{}
+	repository := repositories.InMemoryTaskRepository{}
 	fmt.Println("repository created")
 
 	tl1, _ := repository.GetAll()
@@ -40,7 +40,7 @@ func main() {
 	http.ListenAndServe(":5050", nil)
 }
 
-func showTaskList(tl []entities.Task) {
+func showTaskList(tl []entity.Task) {
 	for _, t := range tl {
 		fmt.Println()
 		fmt.Printf("ID: %s\n", t.Id.String())
