@@ -1,17 +1,16 @@
 package router
 
 import (
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
+	"github.com/willianbl99/todo-list_api/pkg/infra/http/controller"
+	"github.com/willianbl99/todo-list_api/test/repositories/inmemory"
 )
 
 func UserRouter(r chi.Router) {
 	r.Route("/user", func(r chi.Router) {
-		r.Get("/", GetUsers)
+		ur := inmemory.UserRepositoryInMemory{}
+		uc := controller.NewUserController(&ur)
+		
+		r.Post("/", uc.Save)
 	})
-}
-
-func GetUsers(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Get all users"))
 }

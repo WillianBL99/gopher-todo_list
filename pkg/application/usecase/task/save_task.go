@@ -1,4 +1,4 @@
-package usecases
+package usecase
 
 import (
 	"fmt"
@@ -20,11 +20,10 @@ func (s *SaveTask) Execute(title string, describe string, dueDate time.Time, use
 	}
 
 	t := entity.NewTask(uuid.New(), title, describe, dueDate, uid)
-	sErr := s.Repository.Save(t)
-
-	if sErr != nil {
+	
+	if err := s.Repository.Save(t); err != nil {
 		return fmt.Errorf("Error to save task: %v", err.Error())
 	}
 
-	return err
+	return nil
 }

@@ -6,7 +6,7 @@ import (
 )
 
 type UserRepository interface {
-	GetById(id uuid.UUID) (*entity.User, error);
-	GetByEmail(email string) (*entity.User, error);
-	Save(u *entity.User) error;
+	GetById(id uuid.UUID) (entity.User, error)
+	GetByEmail(email string) (entity.User, error)
+	Save(u *entity.User) error
 }
