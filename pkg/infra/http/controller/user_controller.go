@@ -70,7 +70,7 @@ func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jwt := server.JwtService{}
+	jwt := server.NewJwtService()
 	token, err := jwt.GenerateToken(u.Id.String())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNetworkAuthenticationRequired)

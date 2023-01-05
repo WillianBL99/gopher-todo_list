@@ -16,12 +16,11 @@ func (r *UserRepositoryInMemory) GetById(id uuid.UUID) (entity.User, error) {
 
 	for _, user := range r.users {
 		if id == user.Id {
-			u = user
-			break
+			return user, nil
 		}
 	}
 
-	return u, nil
+	return u, errors.New("User not found")
 }
 
 func (r *UserRepositoryInMemory) GetByEmail(email string) (entity.User, error) {

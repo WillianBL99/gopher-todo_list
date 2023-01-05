@@ -9,33 +9,30 @@ import (
 
 type JwtService struct {
 	secretKey string
-	issuer string
+	issuer    string
 }
 
 func NewJwtService() *JwtService {
 	return &JwtService{
 		secretKey: "secret",
-		issuer: "todo-list",
+		issuer:    "todo-list",
 	}
 }
 
 type Claim struct {
-	sum string `json:"sum"`
+	Sum string `json:"sum"`
 	jwt.StandardClaims
 }
 
 func (js *JwtService) GenerateToken(id string) (string, error) {
-	const DAY = 24 * time.Hour
-	cl := &Claim{
-		sum: id,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(DAY).Unix(),
-			Issuer: js.issuer,
-			IssuedAt: time.Now().Unix(),
-		},
-	}
+	const ONE_DAY = 24 * time.Hour
+	token := jwt.New(jwt.SigningMethodHS256)
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cl)
+	cl := token.Claims.(jwt.MapClaims)
+	cl["sum"] = id
+	cl["exp"] = time.Now().Add(ONE_DAY).Unix()
+	cl["iat"] = time.Now().Unix()
+	cl["iss"] = js.issuer
 
 	t, err := token.SignedString([]byte(js.secretKey))
 	if err != nil {
@@ -46,13 +43,32 @@ func (js *JwtService) GenerateToken(id string) (string, error) {
 }
 
 func (js *JwtService) ValidateToken(token string) bool {
-	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("invalid token: %v", token)
-		}
+	_, err := jwt.Parse(token, js.jwtValidate)
 
+	return err == nil
+}
+
+func (js *JwtService) GetTokenId(token string) (string, error) {
+	tk, err := jwt.ParseWithClaims(token, &Claim{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(js.secretKey), nil
 	})
 
-	return err == nil
+	if err != nil {
+		fmt.Errorf("error parsing token: %v\n", err)
+		return "", err
+	}
+
+	if claims, ok := tk.Claims.(*Claim); ok && tk.Valid {
+		return claims.Sum, nil
+	}
+
+	return "", fmt.Errorf("invalid token: %v", token)
+}
+
+func (js *JwtService) jwtValidate(t *jwt.Token) (interface{}, error) {
+	if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+		return nil, fmt.Errorf("invalid token")
+	}
+
+	return []byte(js.secretKey), nil
 }
