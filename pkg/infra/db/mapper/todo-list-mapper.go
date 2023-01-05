@@ -7,10 +7,5 @@ import (
 )
 
 func ToDomain(t *sql.Rows) *entity.Task {
-	return entity.NewTask(
-		t.Id,
-		t.Title,
-		t.Description,
-		t.DueDate,
-	)
+	return &entity.Task{}
 }
