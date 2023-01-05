@@ -1,7 +1,6 @@
 package inmemory
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,9 +16,7 @@ func (r *TaskRepositoryInMemory) GetAll(userId uuid.UUID) ([]entity.Task, error)
 
 	for _, t := range r.tasks {
 		if userId == t.UserId {
-			fmt.Printf("entrou no if: %v == %v\n", userId, t.UserId)
 			tks = append(tks, t)
-			fmt.Println("tks len: ", len(tks))
 		}
 	}
 
@@ -68,10 +65,10 @@ func (r *TaskRepositoryInMemory) Delete(id uuid.UUID) error {
 }
 
 func (r *TaskRepositoryInMemory) Update(t *entity.Task) error {
-	for _, rt := range r.tasks {
+	for n, rt := range r.tasks {
 		if rt.Id == t.Id {
-			rt.Title = t.Title
-			rt.Describe = t.Describe
+			r.tasks[n] = *t
+			r.tasks[n].UpdateAt = time.Now()
 		}
 	}
 

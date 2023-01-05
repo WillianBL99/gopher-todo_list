@@ -7,10 +7,9 @@ import (
 )
 
 func UserRouter(r chi.Router) {
-	r.Route("/user", func(r chi.Router) {
-		ur := inmemory.UserRepositoryInMemory{}
-		uc := controller.NewUserController(&ur)
-		
-		r.Post("/", uc.Save)
-	})
+	ur := inmemory.UserRepositoryInMemory{}
+	uc := controller.NewUserController(&ur)
+
+	r.Post("/sign-up", uc.Register)
+	r.Post("/sign-in", uc.Login)
 }

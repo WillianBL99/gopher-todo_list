@@ -2,7 +2,6 @@ package inmemory
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
@@ -38,7 +37,5 @@ func (r *UserRepositoryInMemory) GetByEmail(email string) (entity.User, error) {
 func (r *UserRepositoryInMemory) Save(u *entity.User) error {
 	r.users = append(r.users, *u)
 
-	fmt.Println(r.users, "len: ", len(r.users))
 	return nil
 }
-
