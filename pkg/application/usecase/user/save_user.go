@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
 	"github.com/willianbl99/todo-list_api/pkg/application/repository"
+	"github.com/willianbl99/todo-list_api/pkg/server"
 )
 
 type SaveUser struct {
@@ -17,7 +18,13 @@ func (s *SaveUser) Execute(name string, email string, password string) error {
 		return fmt.Errorf("Email already exists")
 	}
 
-	u := entity.NewUser(uuid.New(), name, email, password)
+	bc := server.NewBcryptService()
+	hashedPass, err := bc.Encript(password)
+	if err != nil {
+		return fmt.Errorf("Error to encript password: %v", err.Error())
+	}
+
+	u := entity.NewUser(uuid.New(), name, email, hashedPass)
 
 	if err := s.Repository.Save(u); err != nil {
 		return fmt.Errorf("Error to save user: %v", err.Error())

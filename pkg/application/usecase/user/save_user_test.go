@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
+	"github.com/willianbl99/todo-list_api/pkg/server"
 	"github.com/willianbl99/todo-list_api/test/repositories/inmemory"
 )
 
@@ -57,4 +58,18 @@ func SaveUserTest(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 	})
+
+	t.Run("Password should be encripted", func(t *testing.T) {
+		ur := inmemory.UserRepositoryInMemory{}
+		su := SaveUser{Repository: &ur}
+		u := entity.NewUser(uuid.New(), "John Doe", "john@john.doe", "123456")
+
+		su.Execute(u.Name, u.Email, u.Password)
+
+		fu, _ := ur.GetByEmail(u.Email)
+		bc := server.NewBcryptService()
+		if bc.Compare(u.Password, fu.Password) {
+			t.Errorf("Expected password to be encripted, got %v", fu )
+		}
+	});
 }
