@@ -18,6 +18,7 @@ const (
 	TaskTitle       = "title"
 	TaskDescription = "description"
 )
+
 func (t *TaskValue) Set(key string, value string) {
 	t.m[key] = value
 }

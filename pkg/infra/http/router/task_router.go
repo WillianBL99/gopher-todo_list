@@ -24,6 +24,7 @@ func TaskRouter(
 		r.Route("/{taskId}", func(r chi.Router) {
 			r.Use(md.TaskParams)
 			r.Put("/", tc.UpdateTask)
+			r.Delete("/", tc.DeleteTask)
 		})
 	})
 }

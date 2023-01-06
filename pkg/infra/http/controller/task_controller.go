@@ -17,6 +17,7 @@ type TaskController struct {
 		UpdateTask       usecase.UpdateTask
 		GetAllTasks      usecase.GetAllTasks
 		GetTasksByStatus usecase.GetTasksByStatus
+		DeleteTask       usecase.DeleteTask
 	}
 	Repository repository.TaskRepository
 }
@@ -25,6 +26,7 @@ func NewTaskController(r repository.TaskRepository) *TaskController {
 	tc := &TaskController{}
 	tc.Providers.SaveTask = usecase.SaveTask{r}
 	tc.Providers.UpdateTask = usecase.UpdateTask{r}
+	tc.Providers.DeleteTask = usecase.DeleteTask{r}
 	tc.Providers.GetAllTasks = usecase.GetAllTasks{r}
 	tc.Providers.GetTasksByStatus = usecase.GetTasksByStatus{r}
 
@@ -100,9 +102,9 @@ func (tc *TaskController) GetAllTasks(w http.ResponseWriter, r *http.Request) {
 	if status != "" {
 		tasks, err = tc.Providers.GetTasksByStatus.Execute(uid, status)
 	} else {
-		tasks, err = tc.Providers.GetAllTasks.Execute(uid)		
+		tasks, err = tc.Providers.GetAllTasks.Execute(uid)
 	}
-	
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -110,4 +112,17 @@ func (tc *TaskController) GetAllTasks(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tasks)
+}
+
+func (tc *TaskController) DeleteTask(w http.ResponseWriter, r *http.Request) {
+	tctx := r.Context().Value(dto.TaskCtx).(*dto.TaskValue)
+	tid := tctx.Get(dto.TaskId)
+
+	if err := tc.Providers.DeleteTask.Execute(tid); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprint(w, "Task deleted successfully")
 }
