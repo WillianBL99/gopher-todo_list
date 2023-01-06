@@ -12,15 +12,7 @@ type TaskRepositoryInMemory struct {
 }
 
 func (r *TaskRepositoryInMemory) GetAll(userId uuid.UUID) ([]entity.Task, error) {
-	tks := make([]entity.Task, 0, 5)
-
-	for _, t := range r.tasks {
-		if userId == t.UserId {
-			tks = append(tks, t)
-		}
-	}
-
-	return tks, nil
+	return r.tasks, nil
 }
 
 func (r *TaskRepositoryInMemory) GetByStatus(userId uuid.UUID, status entity.Status) ([]entity.Task, error) {

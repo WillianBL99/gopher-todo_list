@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"testing"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
@@ -14,12 +13,12 @@ func TestUpdateTask_Execute(t *testing.T) {
 		rp := inmemory.TaskRepositoryInMemory{}
 		ut := UpdateTask{Repository: &rp}
 		user_id := uuid.New()
-		tk := entity.NewTask(uuid.New(), "Title", "Describe", time.Now(), user_id)
-		ntk := entity.NewTask(tk.Id, "New Title", "New Describe", time.Now().AddDate(0, 0, 1), user_id)
+		tk := entity.NewTask(uuid.New(), "Title", "Describe", user_id)
+		ntk := entity.NewTask(tk.Id, "New Title", "New Describe", user_id)
 
 		rp.Save(tk)
 
-		err := ut.Execute(tk.Id.String(), ntk.Title, ntk.Describe, ntk.DueDate)
+		err := ut.Execute(tk.Id.String(), ntk.Title, ntk.Describe)
 
 		if err != nil {
 			t.Errorf("Error to update task: %s", err.Error())
@@ -31,10 +30,10 @@ func TestUpdateTask_Execute(t *testing.T) {
 
 		ftk, _ := rp.GetById(tk.Id)
 
-		if ftk.Title != ntk.Title || ftk.Describe != ntk.Describe || ftk.DueDate != ntk.DueDate {
-			t.Errorf("Expected: {%s, %s, %s}, got: { %s, %s, %s}",
-				ntk.Title, ntk.Describe, ntk.DueDate,
-				ftk.Title, ftk.Describe, ftk.DueDate,
+		if ftk.Title != ntk.Title || ftk.Describe != ntk.Describe {
+			t.Errorf("Expected: {%s, %s}, got: {%s, %s}",
+				ntk.Title, ntk.Describe,
+				ftk.Title, ftk.Describe,
 			)
 		}
 	})

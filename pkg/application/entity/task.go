@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
@@ -18,15 +16,10 @@ type Task struct {
 	Title    string    `json:"title"`
 	Describe string    `json:"describe"`
 	Status   Status    `json:"status"`
-	DueDate  time.Time `json:"due_date"`
 	UserId   uuid.UUID `json:"user_id"`
 }
 
-func NewTask(id uuid.UUID, title string, describe string, dueDate time.Time, userId uuid.UUID) *Task {
-	if dueDate.IsZero() {
-		dueDate = time.Now().AddDate(0, 0, 1)
-	}
-
+func NewTask(id uuid.UUID, title string, describe string, userId uuid.UUID) *Task {
 	b := Base{}
 	b.New(id)
 
@@ -35,7 +28,6 @@ func NewTask(id uuid.UUID, title string, describe string, dueDate time.Time, use
 		Title:    title,
 		Describe: describe,
 		Status:   Undone,
-		DueDate:  dueDate,
 		UserId:   userId,
 	}
 

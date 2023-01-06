@@ -12,15 +12,13 @@ type UserRepositoryInMemory struct {
 }
 
 func (r *UserRepositoryInMemory) GetById(id uuid.UUID) (entity.User, error) {
-	u := entity.User{}
-
 	for _, user := range r.users {
 		if id == user.Id {
 			return user, nil
 		}
 	}
 
-	return u, errors.New("User not found")
+	return entity.User{}, errors.New("User not found")
 }
 
 func (r *UserRepositoryInMemory) GetByEmail(email string) (entity.User, error) {

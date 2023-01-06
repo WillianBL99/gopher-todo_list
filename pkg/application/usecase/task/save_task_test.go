@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"testing"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
@@ -15,7 +14,7 @@ func TestSaveTask(t *testing.T) {
 		st := SaveTask{Repository: &rp}
 		user_id := uuid.New()
 
-		err := st.Execute("Title", "Describe", time.Now(), user_id.String())
+		err := st.Execute("Title", "Describe", user_id.String())
 
 		if err != nil {
 			t.Errorf("Error to save task: %s", err.Error())
@@ -31,9 +30,9 @@ func TestSaveTask(t *testing.T) {
 		st := SaveTask{Repository: &rp}
 		user_id := uuid.New()
 		
-		st.Execute("Title1", "Describe1", time.Now(), user_id.String())
-		st.Execute("Title2", "Describe2", time.Now(), user_id.String())
-		st.Execute("Title3", "Describe3", time.Now(), user_id.String())
+		st.Execute("Title1", "Describe1", user_id.String())
+		st.Execute("Title2", "Describe2", user_id.String())
+		st.Execute("Title3", "Describe3", user_id.String())
 
 		if l, _ := rp.GetByStatus(user_id, entity.Undone); len(l) != 3 {
 			t.Errorf("Expected 3 undone tasks, got %d", len(l))
@@ -45,7 +44,7 @@ func TestSaveTask(t *testing.T) {
 		st := SaveTask{Repository: &rp}
 		user_id := uuid.New()
 
-		err := st.Execute("Title", "Describe", time.Now(), user_id.String())
+		err := st.Execute("Title", "Describe", user_id.String())
 
 		if err != nil {
 			t.Errorf("Error to save task: %s", err.Error())
@@ -64,7 +63,7 @@ func TestSaveTask(t *testing.T) {
 		rp := inmemory.TaskRepositoryInMemory{}
 		st := SaveTask{Repository: &rp}
 
-		err := st.Execute("Title", "Describe", time.Now(), "invalid")
+		err := st.Execute("Title", "Describe", "invalid")
 
 		if err == nil {
 			t.Errorf("Expected error, got nil")
