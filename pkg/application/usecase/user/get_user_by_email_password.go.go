@@ -20,10 +20,6 @@ func (gu *GetUserByEmailPassword) Execute(e string, p string) (entity.User, erro
 
 	bc := server.NewBcryptService()
 	if !bc.Compare(u.Password, p) {
-		hashed, _ := bc.Encrypt(p)
-		fmt.Printf("Compare: %v\n", bc.Compare(hashed, "123456"))
-		fmt.Printf("Compare: %v\n", bc.Compare(u.Password, p))
-		fmt.Printf("Hash: %v - Pass: %v\n", u.Password, p)
 		return u, fmt.Errorf("Email or password invalid")
 	}
 

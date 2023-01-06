@@ -12,8 +12,9 @@ import (
 
 type TaskController struct {
 	Providers struct {
-		SaveTask   usecase.SaveTask
-		UpdateTask usecase.UpdateTask
+		SaveTask    usecase.SaveTask
+		UpdateTask  usecase.UpdateTask
+		GetAllTasks usecase.GetAllTasks
 	}
 	Repository repository.TaskRepository
 }
@@ -22,6 +23,7 @@ func NewTaskController(r repository.TaskRepository) *TaskController {
 	tc := &TaskController{}
 	tc.Providers.SaveTask = usecase.SaveTask{r}
 	tc.Providers.UpdateTask = usecase.UpdateTask{r}
+	tc.Providers.GetAllTasks = usecase.GetAllTasks{r}
 
 	return tc
 }
@@ -84,4 +86,17 @@ func (tc *TaskController) UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(w, "Task updated successfully")
+}
+
+func (tc *TaskController) GetAllTasks(w http.ResponseWriter, r *http.Request) {
+	uid := r.Context().Value(dto.UserId).(string)
+
+	tasks, err := tc.Providers.GetAllTasks.Execute(uid)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(tasks)
 }

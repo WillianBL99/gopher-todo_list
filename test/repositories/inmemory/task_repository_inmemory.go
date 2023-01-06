@@ -13,7 +13,15 @@ type TaskRepositoryInMemory struct {
 }
 
 func (r *TaskRepositoryInMemory) GetAll(userId uuid.UUID) ([]entity.Task, error) {
-	return r.tasks, nil
+	tks := make([]entity.Task, 0, 5)
+
+	for _, t := range r.tasks {
+		if userId == t.UserId && t.DeletedAt.IsZero() {
+			tks = append(tks, t)
+		}
+	}
+
+	return tks, nil
 }
 
 func (r *TaskRepositoryInMemory) GetByStatus(userId uuid.UUID, status entity.Status) ([]entity.Task, error) {
@@ -29,29 +37,26 @@ func (r *TaskRepositoryInMemory) GetByStatus(userId uuid.UUID, status entity.Sta
 }
 
 func (r *TaskRepositoryInMemory) GetById(id uuid.UUID) (entity.Task, error) {
-	tk := entity.Task{}
-
 	for _, t := range r.tasks {
 		if id == t.Id {
-			tk = t
-			break
+			return t, nil
 		}
 	}
 
-	return tk, nil
+	return entity.Task{}, fmt.Errorf("Task not found")
 }
 
 func (r *TaskRepositoryInMemory) Save(t *entity.Task) error {
-	fmt.Printf("task id: %v", t.Id)
 	r.tasks = append(r.tasks, *t)
 
 	return nil
 }
 
 func (r *TaskRepositoryInMemory) Delete(id uuid.UUID) error {
-	for _, t := range r.tasks {
+	for n, t := range r.tasks {
 		if id == t.Id {
-			t.DeletedAt = time.Now()
+			r.tasks[n].DeletedAt = time.Now()
+			break
 		}
 	}
 
@@ -62,7 +67,7 @@ func (r *TaskRepositoryInMemory) Update(t *entity.Task) error {
 	for n, rt := range r.tasks {
 		if rt.Id == t.Id {
 			r.tasks[n] = *t
-			r.tasks[n].UpdateAt = time.Now()
+			r.tasks[n].UpdatedAt = time.Now()
 		}
 	}
 

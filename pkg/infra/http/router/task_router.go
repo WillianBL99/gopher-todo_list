@@ -14,7 +14,12 @@ func TaskRouter(
 ) {
 	tc := controller.NewTaskController(tr)
 
-	r.With(md.Auth).Route("/task", func(r chi.Router) {
+	r.Route("/tasks", func(r chi.Router) {
+		r.Use(md.Auth)
+		r.Get("/", tc.GetAllTasks)
+	})
+	r.Route("/task", func(r chi.Router) {
+		r.Use(md.Auth)
 		r.Post("/", tc.SaveTask)
 		r.Route("/{taskId}", func(r chi.Router) {
 			r.Use(md.TaskParams)
