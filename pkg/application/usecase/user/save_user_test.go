@@ -9,7 +9,7 @@ import (
 	"github.com/willianbl99/todo-list_api/test/repositories/inmemory"
 )
 
-func SaveUserTest(t *testing.T) {
+func TestSaveUser(t *testing.T) {
 	t.Run("Should save user", func(t *testing.T) {
 		ur := inmemory.UserRepositoryInMemory{}
 		su := SaveUser{Repository: &ur}
@@ -26,7 +26,7 @@ func SaveUserTest(t *testing.T) {
 			t.Errorf("Error to get user: %v", err.Error())
 		}
 
-		if fu.Name != u.Name || fu.Email != u.Email || fu.Password != u.Password {
+		if fu.Name != u.Name || fu.Email != u.Email {
 			t.Errorf("Expected user %v, got %v", u, fu)
 		}
 	})
@@ -67,9 +67,10 @@ func SaveUserTest(t *testing.T) {
 		su.Execute(u.Name, u.Email, u.Password)
 
 		fu, _ := ur.GetByEmail(u.Email)
+
 		bc := server.NewBcryptService()
-		if bc.Compare(u.Password, fu.Password) {
-			t.Errorf("Expected password to be encripted, got %v", fu )
+		if !bc.Compare(fu.Password, u.Password) {
+			t.Errorf("Expected password to be encripted, got %v", fu.Password)
 		}
-	});
+	})
 }

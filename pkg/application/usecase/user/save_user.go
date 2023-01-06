@@ -19,9 +19,9 @@ func (s *SaveUser) Execute(name string, email string, password string) error {
 	}
 
 	bc := server.NewBcryptService()
-	hashedPass, err := bc.Encript(password)
+	hashedPass, err := bc.Encrypt(password)
 	if err != nil {
-		return fmt.Errorf("Error to encript password: %v", err.Error())
+		return fmt.Errorf("Error to encrypt password: %v", err.Error())
 	}
 
 	u := entity.NewUser(uuid.New(), name, email, hashedPass)
@@ -29,6 +29,6 @@ func (s *SaveUser) Execute(name string, email string, password string) error {
 	if err := s.Repository.Save(u); err != nil {
 		return fmt.Errorf("Error to save user: %v", err.Error())
 	}
-
+	
 	return nil
 }
