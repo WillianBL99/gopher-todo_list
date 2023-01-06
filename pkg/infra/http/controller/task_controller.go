@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/willianbl99/todo-list_api/pkg/application/entity"
 	"github.com/willianbl99/todo-list_api/pkg/application/repository"
 	usecase "github.com/willianbl99/todo-list_api/pkg/application/usecase/task"
 	"github.com/willianbl99/todo-list_api/pkg/infra/http/dto"
@@ -12,9 +13,10 @@ import (
 
 type TaskController struct {
 	Providers struct {
-		SaveTask    usecase.SaveTask
-		UpdateTask  usecase.UpdateTask
-		GetAllTasks usecase.GetAllTasks
+		SaveTask         usecase.SaveTask
+		UpdateTask       usecase.UpdateTask
+		GetAllTasks      usecase.GetAllTasks
+		GetTasksByStatus usecase.GetTasksByStatus
 	}
 	Repository repository.TaskRepository
 }
@@ -24,6 +26,7 @@ func NewTaskController(r repository.TaskRepository) *TaskController {
 	tc.Providers.SaveTask = usecase.SaveTask{r}
 	tc.Providers.UpdateTask = usecase.UpdateTask{r}
 	tc.Providers.GetAllTasks = usecase.GetAllTasks{r}
+	tc.Providers.GetTasksByStatus = usecase.GetTasksByStatus{r}
 
 	return tc
 }
@@ -90,8 +93,16 @@ func (tc *TaskController) UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 func (tc *TaskController) GetAllTasks(w http.ResponseWriter, r *http.Request) {
 	uid := r.Context().Value(dto.UserId).(string)
+	status := r.URL.Query().Get("status")
+	var tasks []entity.Task
+	var err error
 
-	tasks, err := tc.Providers.GetAllTasks.Execute(uid)
+	if status != "" {
+		tasks, err = tc.Providers.GetTasksByStatus.Execute(uid, status)
+	} else {
+		tasks, err = tc.Providers.GetAllTasks.Execute(uid)		
+	}
+	
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
