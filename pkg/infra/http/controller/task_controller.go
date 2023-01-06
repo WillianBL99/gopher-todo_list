@@ -18,6 +18,7 @@ type TaskController struct {
 		GetAllTasks      usecase.GetAllTasks
 		GetTasksByStatus usecase.GetTasksByStatus
 		DeleteTask       usecase.DeleteTask
+		MoveTask         usecase.MoveTask
 	}
 	Repository repository.TaskRepository
 }
@@ -29,6 +30,7 @@ func NewTaskController(r repository.TaskRepository) *TaskController {
 	tc.Providers.DeleteTask = usecase.DeleteTask{r}
 	tc.Providers.GetAllTasks = usecase.GetAllTasks{r}
 	tc.Providers.GetTasksByStatus = usecase.GetTasksByStatus{r}
+	tc.Providers.MoveTask = usecase.MoveTask{r}
 
 	return tc
 }
@@ -125,4 +127,19 @@ func (tc *TaskController) DeleteTask(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(w, "Task deleted successfully")
+}
+
+func (tc *TaskController) MoveTask(st entity.Status) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context().Value(dto.TaskCtx).(*dto.TaskValue)
+		tid := ctx.Get(dto.TaskId)
+
+		if err := tc.Providers.MoveTask.Execute(tid, string(st)); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, "Task moved successfully")
+	}
 }

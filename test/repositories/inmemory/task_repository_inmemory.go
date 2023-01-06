@@ -55,6 +55,9 @@ func (r *TaskRepositoryInMemory) Save(t *entity.Task) error {
 func (r *TaskRepositoryInMemory) Delete(id uuid.UUID) error {
 	for n, t := range r.tasks {
 		if id == t.Id {
+			if !t.DeletedAt.IsZero() {
+				return fmt.Errorf("Task already deleted")
+			}
 			r.tasks[n].DeletedAt = time.Now()
 			break
 		}
