@@ -5,6 +5,11 @@ import (
 	"regexp"
 )
 
+type UserCtx string
+
+const (
+	UserId   UserCtx = "userId"
+)
 type RegisterUserRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`

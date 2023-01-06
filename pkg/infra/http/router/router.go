@@ -11,12 +11,13 @@ import (
 
 func MainRouter() chi.Router {
 	ur := inmemory.UserRepositoryInMemory{}
-	tr := inmemory.TaskRepositoryInMemory{}	
+	tr := inmemory.TaskRepositoryInMemory{}
+	md := middleware.NewMiddleware(&ur, &tr)
 	r := chi.NewRouter()
 
 	r.Get("/health", HealthCheck)
 	UserRouter(r, &ur)
-	TaskRouter(r, &tr, middleware.AuthHandler(&ur))
+	TaskRouter(r, &tr, md)
 
 	return r
 }

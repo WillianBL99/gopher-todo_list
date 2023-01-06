@@ -11,7 +11,7 @@ type UpdateTask struct {
 	Repository repository.TaskRepository
 }
 
-func (u *UpdateTask) Execute(id string, title string, describe string) error {
+func (u *UpdateTask) Execute(id string, title string, description string) error {
 	var err error
 
 	tid, err := uuid.Parse(id)
@@ -25,7 +25,7 @@ func (u *UpdateTask) Execute(id string, title string, describe string) error {
 	}
 
 	tk.Title = title
-	tk.Describe = describe
+	tk.Description = description
 	
 	err = u.Repository.Update(&tk)
 	if err != nil {

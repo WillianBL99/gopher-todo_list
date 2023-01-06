@@ -10,7 +10,7 @@ COPY . /app
 # Set working directory
 WORKDIR /app
 
-# Run command as described:
+# Run command as descriptiond:
 # go build will build an executable file named server in the current directory
 RUN go build -o server . 
 

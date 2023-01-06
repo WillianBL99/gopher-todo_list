@@ -9,16 +9,16 @@ import (
 )
 
 func TestUpdateTask_Execute(t *testing.T) {
-	t.Run("Should update task title, describe and due date", func(t *testing.T) {
+	t.Run("Should update task title, description and due date", func(t *testing.T) {
 		rp := inmemory.TaskRepositoryInMemory{}
 		ut := UpdateTask{Repository: &rp}
 		user_id := uuid.New()
-		tk := entity.NewTask(uuid.New(), "Title", "Describe", user_id)
-		ntk := entity.NewTask(tk.Id, "New Title", "New Describe", user_id)
+		tk := entity.NewTask(uuid.New(), "Title", "Description", user_id)
+		ntk := entity.NewTask(tk.Id, "New Title", "New Description", user_id)
 
 		rp.Save(tk)
 
-		err := ut.Execute(tk.Id.String(), ntk.Title, ntk.Describe)
+		err := ut.Execute(tk.Id.String(), ntk.Title, ntk.Description)
 
 		if err != nil {
 			t.Errorf("Error to update task: %s", err.Error())
@@ -30,10 +30,10 @@ func TestUpdateTask_Execute(t *testing.T) {
 
 		ftk, _ := rp.GetById(tk.Id)
 
-		if ftk.Title != ntk.Title || ftk.Describe != ntk.Describe {
+		if ftk.Title != ntk.Title || ftk.Description != ntk.Description {
 			t.Errorf("Expected: {%s, %s}, got: {%s, %s}",
-				ntk.Title, ntk.Describe,
-				ftk.Title, ftk.Describe,
+				ntk.Title, ntk.Description,
+				ftk.Title, ftk.Description,
 			)
 		}
 	})

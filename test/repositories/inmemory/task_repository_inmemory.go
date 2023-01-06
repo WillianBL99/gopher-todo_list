@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -41,6 +42,7 @@ func (r *TaskRepositoryInMemory) GetById(id uuid.UUID) (entity.Task, error) {
 }
 
 func (r *TaskRepositoryInMemory) Save(t *entity.Task) error {
+	fmt.Printf("task id: %v", t.Id)
 	r.tasks = append(r.tasks, *t)
 
 	return nil
