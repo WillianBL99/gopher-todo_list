@@ -15,3 +15,6 @@
 # vendor/
 
 swagger.yaml
+
+# Environment variables
+.env
