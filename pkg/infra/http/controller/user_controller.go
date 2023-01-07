@@ -27,6 +27,17 @@ func NewUserController(r repository.UserRepository) *UserController {
 	return uc
 }
 
+// Register registra um novo usuário
+// @Summary Registra um novo usuário
+// @Description Registra um novo usuário
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param body body dto.RegisterUserRequest true "Dados do usuário"
+// @Success 201 {object} dto.RegisterUserResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /sign-up [post]
 func (uc *UserController) Register(w http.ResponseWriter, r *http.Request) {
 	var ru dto.RegisterUserRequest
 

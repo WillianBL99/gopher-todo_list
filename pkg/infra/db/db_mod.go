@@ -11,6 +11,9 @@ type DbMod struct {
 	TaskRepository rp.TaskRepository
 }
 
+// NewDbMod returns a new DbMod
+// This function is used to connect to the database and return the repositories
+// @title Gopher Todo-list modulo
 func NewDbMod() *DbMod {
 	srvdb := postgres.PostgresServer{}
  	conndb := srvdb.Connect()
