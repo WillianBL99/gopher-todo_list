@@ -1,11 +1,12 @@
 package controller
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/willianbl99/todo-list_api/pkg/application/repository"
 	usecase "github.com/willianbl99/todo-list_api/pkg/application/usecase/user"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 	"github.com/willianbl99/todo-list_api/pkg/infra/http/dto"
 	"github.com/willianbl99/todo-list_api/pkg/server"
 )
@@ -29,61 +30,44 @@ func NewUserController(r repository.UserRepository) *UserController {
 func (uc *UserController) Register(w http.ResponseWriter, r *http.Request) {
 	var ru dto.RegisterUserRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&ru); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	
-	if err := ru.Validate(); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := dto.ToDTO(r, &ru); err != nil {
+		herr.BadBodyRequest(w, err)
 		return
 	}
 
 	err := uc.Providers.SaveUser.Execute(ru.Name, ru.Email, ru.Password)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		herr.AppToHttp(w, err)
 		return
 	}
 
-	w.Write([]byte("User saved"))
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	fmt.Fprintf(w, `{"message": "User created successfully"}`)
 }
 
 func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-
 	var lu dto.LoginUserRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&lu); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	
-	if err := lu.Validate(); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := dto.ToDTO(r, &lu); err != nil {
+		herr.BadBodyRequest(w, err)
 		return
 	}
 
 	u, err := uc.Providers.GetUserByEmailPassword.Execute(lu.Email, lu.Password)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		herr.AppToHttp(w, err)
 		return
 	}
 
 	jwt := server.NewJwtService()
 	token, err := jwt.GenerateToken(u.Id.String())
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNetworkAuthenticationRequired)
+		herr.NewHttp().InternalServerError(w)
 		return
 	}
 
-	res := make(map[string]string)
-	res["token"] = token
-	resp, err := json.Marshal(res)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Write(resp)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, `{"token": "%s"}`, token)
 }

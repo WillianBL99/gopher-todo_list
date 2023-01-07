@@ -1,10 +1,9 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/repository"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type UpdateTask struct {
@@ -16,12 +15,12 @@ func (u *UpdateTask) Execute(id string, title string, description string) error 
 
 	tid, err := uuid.Parse(id)
 	if err != nil {
-		return fmt.Errorf("Error to parse taskId: %v", err.Error())
+		return herr.NewApp().InvalidTaskId
 	}
 
 	tk, err := u.Repository.GetById(tid)
 	if err != nil {
-		return fmt.Errorf("Task not found: %v", err.Error())
+		return err
 	}
 
 	tk.Title = title
@@ -29,7 +28,7 @@ func (u *UpdateTask) Execute(id string, title string, description string) error 
 	
 	err = u.Repository.Update(&tk)
 	if err != nil {
-		return fmt.Errorf("Error to update task: %v", err.Error())
+		return err
 	}
 
 	return nil

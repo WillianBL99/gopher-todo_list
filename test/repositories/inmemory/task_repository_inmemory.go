@@ -1,11 +1,11 @@
 package inmemory
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type TaskRepositoryInMemory struct {
@@ -43,7 +43,7 @@ func (r *TaskRepositoryInMemory) GetById(id uuid.UUID) (entity.Task, error) {
 		}
 	}
 
-	return entity.Task{}, fmt.Errorf("Task not found")
+	return entity.Task{}, herr.NewApp().TaskNotFound
 }
 
 func (r *TaskRepositoryInMemory) Save(t *entity.Task) error {
@@ -56,7 +56,7 @@ func (r *TaskRepositoryInMemory) Delete(id uuid.UUID) error {
 	for n, t := range r.tasks {
 		if id == t.Id {
 			if !t.DeletedAt.IsZero() {
-				return fmt.Errorf("Task already deleted")
+				return herr.NewApp().Conflict
 			}
 			r.tasks[n].DeletedAt = time.Now()
 			break

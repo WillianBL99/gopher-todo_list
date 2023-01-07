@@ -8,6 +8,7 @@ import (
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
 	"github.com/willianbl99/todo-list_api/pkg/application/repository"
 	usecase "github.com/willianbl99/todo-list_api/pkg/application/usecase/task"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 	"github.com/willianbl99/todo-list_api/pkg/infra/http/dto"
 )
 
@@ -37,38 +38,30 @@ func NewTaskController(r repository.TaskRepository) *TaskController {
 
 func (tc *TaskController) SaveTask(w http.ResponseWriter, r *http.Request) {
 	st := dto.SaveTaskBodyRequest{}
-
-	if err := json.NewDecoder(r.Body).Decode(&st); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	
+	if err := dto.ToDTO(r, &st); err != nil {
+		herr.BadBodyRequest(w, err)
 		return
 	}
 
-	if err := st.Validate(); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 	uid := r.Context().Value(dto.UserId).(string)
 
 	err := tc.Providers.SaveTask.Execute(st.Title, st.Description, uid)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		herr.AppToHttp(w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	fmt.Fprint(w, "Task created successfully")
 }
 
 func (tc *TaskController) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	ut := dto.UpdateTaskBodyRequest{}
 
-	if err := json.NewDecoder(r.Body).Decode(&ut); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if err := ut.Validate(); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := dto.ToDTO(r, &ut); err != nil {
+		herr.BadBodyRequest(w, err)
 		return
 	}
 
@@ -87,11 +80,12 @@ func (tc *TaskController) UpdateTask(w http.ResponseWriter, r *http.Request) {
 		tctx.Get(dto.TaskTitle),
 		tctx.Get(dto.TaskDescription),
 	); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		herr.AppToHttp(w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
 	fmt.Fprint(w, "Task updated successfully")
 }
 
@@ -108,11 +102,12 @@ func (tc *TaskController) GetAllTasks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		herr.AppToHttp(w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(tasks)
 }
 
@@ -121,11 +116,12 @@ func (tc *TaskController) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	tid := tctx.Get(dto.TaskId)
 
 	if err := tc.Providers.DeleteTask.Execute(tid); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		herr.AppToHttp(w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
 	fmt.Fprint(w, "Task deleted successfully")
 }
 
@@ -135,11 +131,12 @@ func (tc *TaskController) MoveTask(st entity.Status) func(w http.ResponseWriter,
 		tid := ctx.Get(dto.TaskId)
 
 		if err := tc.Providers.MoveTask.Execute(tid, string(st)); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			herr.AppToHttp(w, err)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNoContent)
 		fmt.Fprint(w, "Task moved successfully")
 	}
 }
