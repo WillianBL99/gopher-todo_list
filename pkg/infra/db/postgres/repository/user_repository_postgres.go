@@ -2,10 +2,10 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 const (
@@ -19,14 +19,9 @@ type UserRepositoryPostgres struct {
 }
 
 func (up *UserRepositoryPostgres) GetById(id uuid.UUID) (entity.User, error) {
-	panic("implement me")
-}
-
-func (up *UserRepositoryPostgres) GetByEmail(email string) (entity.User, error) {
-	rw, err := up.Server.Query(gbyem, email)
+	rw, err := up.Server.Query(gbyid, id)
 	if err != nil {
-		fmt.Println("errz: ", err)
-		return *&entity.User{}, err
+		return entity.User{}, err
 	}
 
 	u := entity.User{}
@@ -34,8 +29,33 @@ func (up *UserRepositoryPostgres) GetByEmail(email string) (entity.User, error) 
 	rw.Next()
 	err = rw.Scan(&u.Id, &u.Name, &u.Email, &u.Password)
 	if err != nil {
-		fmt.Println("errz: ", err)
-		return *&entity.User{}, err
+		return entity.User{}, err
+	}
+
+	if u.Email == "" {
+		return entity.User{}, herr.NewApp().UserNotFound
+	}
+
+	defer rw.Close()
+	return u, nil
+}
+
+func (up *UserRepositoryPostgres) GetByEmail(email string) (entity.User, error) {
+	rw, err := up.Server.Query(gbyem, email)
+	if err != nil {
+		return entity.User{}, err
+	}
+
+	u := entity.User{}
+
+	rw.Next()
+	err = rw.Scan(&u.Id, &u.Name, &u.Email, &u.Password)
+	if err != nil {
+		return entity.User{}, err
+	}
+
+	if u.Email == "" {
+		return entity.User{}, herr.NewApp().UserNotFound
 	}
 
 	defer rw.Close()
@@ -45,7 +65,6 @@ func (up *UserRepositoryPostgres) GetByEmail(email string) (entity.User, error) 
 func (up *UserRepositoryPostgres) Save(u *entity.User) error {
 	rw, err := up.Server.Query(saveqy, u.Id, u.Name, u.Email, u.Password)
 	if err != nil {
-		fmt.Println("errz: ", err)
 		return err
 	}
 	defer rw.Close()

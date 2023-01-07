@@ -13,7 +13,7 @@ type DbMod struct {
 
 func NewDbMod() *DbMod {
 	srvdb := postgres.PostgresServer{}
-	conndb := srvdb.Connect()
+ 	conndb := srvdb.Connect()
 
 	urp := repository.UserRepositoryPostgres{Server: conndb}
 	trp := repository.TaskRepositoryPostgres{Server: conndb}

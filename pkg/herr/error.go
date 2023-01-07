@@ -52,6 +52,21 @@ func AppToHttp(w http.ResponseWriter, err error) {
 	case Email_Already_Exists:
 		hte.EmailAlreadyExists(w)
 		return
+	case Invalid_Token:
+		hte.InvalidToken(w)
+		return
+	case Invalid_Task_Id:
+		hte.InvalidTaskId(w)
+		return
+	case Invalid_Task_Status:
+		hte.InvalidTaskStatus(w)
+		return
+	case Invalid_User_Id:
+		hte.InvalidUserId(w)
+		return
+	case Email_Or_Password_Invalid:
+		hte.EmailOrPasswordInvalid(w)
+		return
 	default:
 		GenHttpError(
 			w,
