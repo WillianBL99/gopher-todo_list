@@ -1,3 +1,3 @@
-docker build -t application-server .
+docker build -t todolist_aplication .
 
-docker run -it --rm -p 5050:5050 application-server
+docker run -it --rm -p 5050:5050 todolist_aplication

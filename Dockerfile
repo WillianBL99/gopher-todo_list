@@ -12,7 +12,7 @@ WORKDIR /app
 
 # Run command as descriptiond:
 # go build will build an executable file named server in the current directory
-RUN go build -o server . 
+RUN go build -o server ./cmd/todolist
 
 # Run the server executable
 CMD [ "/app/server" ]

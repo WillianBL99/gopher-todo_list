@@ -1,0 +1,30 @@
+version: '3'
+services:
+  pg_db:
+    image: postgres
+    container_name: pg_db
+    restart: always
+    ports:
+      - 2345:5432
+    environment:
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "todo_list"
+    volumes:
+      - db:/var/lib/postgresql/data
+  go_app:
+    build: .
+    container_name: go_app
+    depends_on:
+      - pg_db
+    environment:
+      APP_PORT: 3000
+      DB_HOST: pg_db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: admin
+      DB_NAME: todo_list
+
+volumes:
+  db:
+  

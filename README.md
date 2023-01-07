@@ -26,19 +26,19 @@ O projeto já contem um arquivo `Dockerfile` para criação de um container `Go`
 
 É necessário que o candidato tenha o docker instalado
 
-##
+## Instruções
 
 Para criar a imagem 
 
 1.
 ``` bash
-sudo docker build -t application-server .
+sudo docker build -t todolist_aplication .
 ```
 
 Para iniciar o server 
 
 ``` bash
-sudo docker run -it --rm -p 5050:5050 application-server
+sudo docker run -it --rm -p 3000:3000 todolist_aplication
 ```
 
 2.
@@ -47,3 +47,10 @@ Ou com auxilio do script
 ``` bash
 sudo sh init.sh
 ```
+
+### Para rodar localmente
+
+1. Instale o Go
+2. Instale o Postgres
+3. Faça uma cópia do arquivo `.env.example` para `.env`
+4. Rode o comando `make server`
