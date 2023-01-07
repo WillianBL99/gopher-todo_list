@@ -1,0 +1,14 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Esta é uma API que permite lidar com tarefas. Esta api está implementada com validação de rotas com Json Web Token (JWT) para melhor segurança ao acessar as rotas.",
+        "title": "Gopher Todo-list",
+        "contact": {},
+        "version": "1.0.0"
+    },
+    "basePath": "/",
+    "paths": {}
+}
