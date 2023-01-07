@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -44,14 +45,26 @@ func newDatabase() *Database {
 		db.User == "" ||
 		db.Password == "" ||
 		db.Name == "" {
-		panic("Database configuration not found")
+			db.Host = "localhost"
+			db.Port = "5432"
+			db.User = "postgres"
+			db.Password = "admin"
+			db.Name = "todo_list"
+		//panic("Database configuration not found")
 	}
 
 	return &db
 }
 
 func (d *Database) ConnStr() string {
-	return d.User + ":" + d.Password + "@tcp(" + d.Host + ":" + d.Port + ")/" + d.Name
+	return fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		d.User,
+		d.Password,
+		d.Host,
+		d.Port,
+		d.Name,
+	)
 }
 
 type AppConf struct {

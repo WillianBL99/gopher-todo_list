@@ -62,3 +62,9 @@ func AppToHttp(w http.ResponseWriter, err error) {
 		return
 	}
 }
+
+func CheckError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
