@@ -1,10 +1,9 @@
 package inmemory
 
 import (
-	"errors"
-
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type UserRepositoryInMemory struct {
@@ -18,7 +17,7 @@ func (r *UserRepositoryInMemory) GetById(id uuid.UUID) (entity.User, error) {
 		}
 	}
 
-	return entity.User{}, errors.New("User not found")
+	return entity.User{}, herr.NewApp().UserNotFound
 }
 
 func (r *UserRepositoryInMemory) GetByEmail(email string) (entity.User, error) {
@@ -28,7 +27,7 @@ func (r *UserRepositoryInMemory) GetByEmail(email string) (entity.User, error) {
 		}
 	}
 
-	return entity.User{}, errors.New("User not found")
+	return entity.User{}, herr.NewApp().UserNotFound
 }
 
 func (r *UserRepositoryInMemory) Save(u *entity.User) error {

@@ -1,11 +1,10 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
 	"github.com/willianbl99/todo-list_api/pkg/application/repository"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type MoveTask struct {
@@ -20,7 +19,7 @@ func (mt *MoveTask) Execute(tid string, st string) error {
 
 	pst := entity.Status(st)
 	if pst != entity.Done && pst != entity.Undone {
-		return fmt.Errorf("Invalid status")
+		return herr.NewApp().InvalidTaskStatus
 	}
 
 	task, err := mt.TaskRepository.GetById(ptid)
@@ -29,13 +28,13 @@ func (mt *MoveTask) Execute(tid string, st string) error {
 	}
 
 	if task.Status == pst {
-		return fmt.Errorf("Task is already %v", pst)
+		return herr.NewApp().Conflict
 	}
 
 	task.Status = pst
 
 	if err := mt.TaskRepository.Update(&task); err != nil {
-		return fmt.Errorf("Error chaging task status: %w", err)
+		return err
 	}
 
 	return nil

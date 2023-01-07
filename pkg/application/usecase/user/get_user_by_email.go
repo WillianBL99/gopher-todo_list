@@ -1,11 +1,10 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
 	"github.com/willianbl99/todo-list_api/pkg/application/repository"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type GetUserById struct {
@@ -15,12 +14,12 @@ type GetUserById struct {
 func (gu *GetUserById) Execute(id string) (entity.User, error) {
 	uid, err := uuid.Parse(id)
 	if err != nil {
-		return entity.User{}, fmt.Errorf("Error to parse uuid: %v", err.Error())
+		return entity.User{}, herr.NewApp().InvalidUserId
 	}
 
 	u, err := gu.Repository.GetById(uid)
 	if err != nil {
-		return entity.User{}, fmt.Errorf("Error to get user: %v", err.Error())
+		return entity.User{}, err
 	}
 
 	return u, nil

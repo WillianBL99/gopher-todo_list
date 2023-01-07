@@ -1,11 +1,10 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/google/uuid"
 	"github.com/willianbl99/todo-list_api/pkg/application/entity"
 	"github.com/willianbl99/todo-list_api/pkg/application/repository"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type SaveTask struct {
@@ -15,13 +14,13 @@ type SaveTask struct {
 func (s *SaveTask) Execute(title string, description string, userId string) error {
 	uid, err := uuid.Parse(userId)
 	if err != nil {
-		return fmt.Errorf("Error to parse userId: %v", err.Error())
+		return herr.NewApp().BadRequest
 	}
 
 	t := entity.NewTask(uuid.New(), title, description, uid)
 
 	if err := s.Repository.Save(t); err != nil {
-		return fmt.Errorf("Error to save task: %v", err.Error())
+		return err
 	}
 
 	return nil

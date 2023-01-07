@@ -1,10 +1,10 @@
 package server
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type JwtService struct {
@@ -54,20 +54,19 @@ func (js *JwtService) GetTokenId(token string) (string, error) {
 	})
 
 	if err != nil {
-		fmt.Errorf("error parsing token: %v\n", err)
-		return "", err
+		return "", herr.NewApp().InvalidToken
 	}
 
 	if claims, ok := tk.Claims.(*Claim); ok && tk.Valid {
 		return claims.Sum, nil
 	}
 
-	return "", fmt.Errorf("invalid token: %v", token)
+	return "", herr.NewApp().InvalidToken
 }
 
 func (js *JwtService) jwtValidate(t *jwt.Token) (interface{}, error) {
 	if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-		return nil, fmt.Errorf("invalid token")
+		return nil, herr.NewApp().InvalidToken
 	}
 
 	return []byte(js.secretKey), nil
