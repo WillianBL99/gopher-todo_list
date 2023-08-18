@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/WillianBL99/repo-provas">
-    <img src="https://icon-library.com/images/android-file-icon/android-file-icon-4.jpg" alt="readme-logo" width="180" >
+    <img src="https://github.com/WillianBL99/gopher-todo_list/assets/65803142/fc32a68b-929e-4849-8f66-d5d875f5456f" width="180" >
   </a>
 
   <h3 align="center">
