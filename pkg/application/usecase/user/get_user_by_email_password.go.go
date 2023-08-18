@@ -8,11 +8,11 @@ import (
 )
 
 type GetUserByEmailPassword struct {
-	Repository repository.UserRepository
+	UserRepository repository.UserRepository
 }
 
 func (gu *GetUserByEmailPassword) Execute(e string, p string) (entity.User, error) {
-	u, err := gu.Repository.GetByEmail(e)
+	u, err := gu.UserRepository.GetByEmail(e)
 	if err != nil {
 		return u, err
 	}

@@ -12,7 +12,7 @@ import (
 func TestSaveUser(t *testing.T) {
 	t.Run("Should save user", func(t *testing.T) {
 		ur := inmemory.UserRepositoryInMemory{}
-		su := SaveUser{Repository: &ur}
+		su := SaveUser{UserRepository: &ur}
 
 		u := entity.NewUser(uuid.New(), "John Doe", "email@email.com", "123456")
 
@@ -33,7 +33,7 @@ func TestSaveUser(t *testing.T) {
 
 	t.Run("Should save user and generate uuid", func(t *testing.T) {
 		ur := inmemory.UserRepositoryInMemory{}
-		su := SaveUser{Repository: &ur}
+		su := SaveUser{UserRepository: &ur}
 
 		u := entity.NewUser(uuid.Nil, "John Doe", "john@john.doe", "123456")
 
@@ -48,11 +48,11 @@ func TestSaveUser(t *testing.T) {
 
 	t.Run("Should return error if email already exists", func(t *testing.T) {
 		ur := inmemory.UserRepositoryInMemory{}
-		su := SaveUser{Repository: &ur}
+		su := SaveUser{UserRepository: &ur}
 		u := entity.NewUser(uuid.New(), "John Doe", "john@john.doe", "123456")
 
 		ur.Save(u)
-		
+
 		err := su.Execute(u.Name, u.Email, u.Password)
 		if err == nil {
 			t.Errorf("Expected error, got %v", err)
@@ -61,7 +61,7 @@ func TestSaveUser(t *testing.T) {
 
 	t.Run("Password should be encripted", func(t *testing.T) {
 		ur := inmemory.UserRepositoryInMemory{}
-		su := SaveUser{Repository: &ur}
+		su := SaveUser{UserRepository: &ur}
 		u := entity.NewUser(uuid.New(), "John Doe", "john@john.doe", "123456")
 
 		su.Execute(u.Name, u.Email, u.Password)

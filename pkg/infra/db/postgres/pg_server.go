@@ -15,17 +15,18 @@ type PostgresServer struct {
 }
 
 func (ps *PostgresServer) Connect() *sql.DB {
-	
+
 	dbcf := config.NewAppConf().Database
-	
+
 	var err error
+	fmt.Printf("Conn. string: %s\n", dbcf.ConnStr())
 	ps.Db, err = sql.Open("postgres", dbcf.ConnStr())
 	herr.CheckError(err)
-	
+
 	if err := ps.Db.Ping(); err != nil {
 		herr.CheckError(err)
 	}
-	
+
 	fmt.Println("Database connected")
 	return ps.Db
 }

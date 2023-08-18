@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	saveqy = `INSERT INTO public.user (id, name, email, password) VALUES ($1, $2, $3, $4)`
-	gbyid  = `SELECT * FROM public.user WHERE id = $1`
-	gbyem  = `SELECT * FROM public.user WHERE email = $1`
+	saveqy = `INSERT INTO users (id, name, email, password, created_at) VALUES ($1, $2, $3, $4, $5)`
+	gbyid  = `SELECT * FROM users WHERE id = $1`
+	gbyem  = `SELECT * FROM users WHERE email = $1`
 )
 
 type UserRepositoryPostgres struct {
@@ -49,7 +49,7 @@ func (up *UserRepositoryPostgres) GetByEmail(email string) (entity.User, error) 
 	u := entity.User{}
 
 	rw.Next()
-	err = rw.Scan(&u.Id, &u.Name, &u.Email, &u.Password)
+	err = rw.Scan(&u.Id, &u.CreatedAt, &u.UpdatedAt, &u.DeletedAt, &u.Name, &u.Email, &u.Password)
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -63,7 +63,7 @@ func (up *UserRepositoryPostgres) GetByEmail(email string) (entity.User, error) 
 }
 
 func (up *UserRepositoryPostgres) Save(u *entity.User) error {
-	rw, err := up.Server.Query(saveqy, u.Id, u.Name, u.Email, u.Password)
+	rw, err := up.Server.Query(saveqy, u.Id, u.Name, u.Email, u.Password, u.CreatedAt)
 	if err != nil {
 		return err
 	}

@@ -10,17 +10,17 @@ import (
 )
 
 const (
-	getalltqy  = `SELECT id, user_id, title, description, status FROM public.task WHERE user_id = $1`
-	getbysttqy = `SELECT id, user_id, title, description, status FROM public.task WHERE user_id = $1 AND status = $2`
-	getbyidtqy = `SELECT id, user_id, title, description, status FROM public.task WHERE id = $1`
+	getalltqy  = `SELECT id, user_id, title, description, status FROM tasks WHERE user_id = $1`
+	getbysttqy = `SELECT id, user_id, title, description, status FROM tasks WHERE user_id = $1 AND status = $2`
+	getbyidtqy = `SELECT id, user_id, title, description, status FROM tasks WHERE id = $1`
 	savetqy    = `
-		INSERT INTO public.task (id, user_id, title, description, status, created_at) 
+		INSERT INTO tasks (id, user_id, title, description, status, created_at) 
 		VALUES ($1, $2, $3, $4, $5, $6)`
 	updatetqy = `
-		UPDATE public.task
+		UPDATE tasks
 			SET title=$2, description=$3, status=$4, updated_at=$5
 			WHERE id = $1`
-	deletetqy = `DELETE FROM public.task WHERE id = $1`
+	deletetqy = `DELETE FROM tasks WHERE id = $1`
 )
 
 type TaskRepositoryPostgres struct {

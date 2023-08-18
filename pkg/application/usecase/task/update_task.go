@@ -7,7 +7,7 @@ import (
 )
 
 type UpdateTask struct {
-	Repository repository.TaskRepository
+	TaskRepository repository.TaskRepository
 }
 
 func (u *UpdateTask) Execute(id string, title string, description string) error {
@@ -18,15 +18,15 @@ func (u *UpdateTask) Execute(id string, title string, description string) error 
 		return herr.NewApp().InvalidTaskId
 	}
 
-	tk, err := u.Repository.GetById(tid)
+	tk, err := u.TaskRepository.GetById(tid)
 	if err != nil {
 		return err
 	}
 
 	tk.Title = title
 	tk.Description = description
-	
-	err = u.Repository.Update(&tk)
+
+	err = u.TaskRepository.Update(&tk)
 	if err != nil {
 		return err
 	}

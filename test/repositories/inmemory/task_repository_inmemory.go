@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,7 +17,7 @@ func (r *TaskRepositoryInMemory) GetAll(userId uuid.UUID) ([]entity.Task, error)
 	tks := make([]entity.Task, 0, 5)
 
 	for _, t := range r.tasks {
-		if userId == t.UserId && t.DeletedAt.IsZero() {
+		if userId == t.UserId && !t.DeletedAt.Valid {
 			tks = append(tks, t)
 		}
 	}
@@ -55,10 +56,10 @@ func (r *TaskRepositoryInMemory) Save(t *entity.Task) error {
 func (r *TaskRepositoryInMemory) Delete(id uuid.UUID) error {
 	for n, t := range r.tasks {
 		if id == t.Id {
-			if !t.DeletedAt.IsZero() {
+			if t.DeletedAt.Valid {
 				return herr.NewApp().Conflict
 			}
-			r.tasks[n].DeletedAt = time.Now()
+			r.tasks[n].DeletedAt = sql.NullTime{Time: time.Now(), Valid: true}
 			break
 		}
 	}
@@ -70,7 +71,7 @@ func (r *TaskRepositoryInMemory) Update(t *entity.Task) error {
 	for n, rt := range r.tasks {
 		if rt.Id == t.Id {
 			r.tasks[n] = *t
-			r.tasks[n].UpdatedAt = time.Now()
+			r.tasks[n].UpdatedAt = sql.NullTime{Time: time.Now(), Valid: true}
 		}
 	}
 

@@ -8,7 +8,7 @@ import (
 )
 
 type SaveTask struct {
-	Repository repository.TaskRepository
+	TaskRepository repository.TaskRepository
 }
 
 func (s *SaveTask) Execute(title string, description string, userId string) error {
@@ -19,7 +19,7 @@ func (s *SaveTask) Execute(title string, description string, userId string) erro
 
 	t := entity.NewTask(uuid.New(), title, description, uid)
 
-	if err := s.Repository.Save(t); err != nil {
+	if err := s.TaskRepository.Save(t); err != nil {
 		return err
 	}
 

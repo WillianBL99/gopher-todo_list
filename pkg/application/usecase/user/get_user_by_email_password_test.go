@@ -12,7 +12,7 @@ import (
 func TestGetUserByEmailPassword(t *testing.T) {
 	t.Run("Should return user", func(t *testing.T) {
 		ur := inmemory.UserRepositoryInMemory{}
-		gu := GetUserByEmailPassword{Repository: &ur}
+		gu := GetUserByEmailPassword{UserRepository: &ur}
 
 		p := "123456"
 		bc := server.NewBcryptService()
@@ -33,7 +33,7 @@ func TestGetUserByEmailPassword(t *testing.T) {
 
 	t.Run("Should return error if password is invalid", func(t *testing.T) {
 		ur := inmemory.UserRepositoryInMemory{}
-		gu := GetUserByEmailPassword{Repository: &ur}
+		gu := GetUserByEmailPassword{UserRepository: &ur}
 
 		p := "123456"
 		bc := server.NewBcryptService()
@@ -48,7 +48,7 @@ func TestGetUserByEmailPassword(t *testing.T) {
 
 	t.Run("Should return error if email is invalid", func(t *testing.T) {
 		ur := inmemory.UserRepositoryInMemory{}
-		gu := GetUserByEmailPassword{Repository: &ur}
+		gu := GetUserByEmailPassword{UserRepository: &ur}
 
 		p := "123456"
 		bc := server.NewBcryptService()

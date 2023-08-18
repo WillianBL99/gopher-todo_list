@@ -9,11 +9,11 @@ import (
 )
 
 type SaveUser struct {
-	Repository repository.UserRepository
+	UserRepository repository.UserRepository
 }
 
 func (s *SaveUser) Execute(name string, email string, password string) error {
-	if _, err := s.Repository.GetByEmail(email); err == nil {
+	if _, err := s.UserRepository.GetByEmail(email); err == nil {
 		return herr.NewApp().EmailAlreadyExists
 	}
 
@@ -25,7 +25,7 @@ func (s *SaveUser) Execute(name string, email string, password string) error {
 
 	u := entity.NewUser(uuid.New(), name, email, hashedPass)
 
-	if err := s.Repository.Save(u); err != nil {
+	if err := s.UserRepository.Save(u); err != nil {
 		return err
 	}
 

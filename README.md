@@ -1,56 +1,145 @@
-## Teste Sipub Tech
+<p align="center">
+  <a href="https://github.com/WillianBL99/repo-provas">
+    <img src="https://icon-library.com/images/android-file-icon/android-file-icon-4.jpg" alt="readme-logo" width="180" >
+  </a>
 
- O propósito deste teste é criar uma aplicação web com foco no back-end, utilizando todo o poder da linguagem Go. Nesta aplicação, o foco é em organizar as tarefas do dia-a-dia. Assim, essa aplicação consiste na criação de uma API Rest para um projeto de um TO-DO List sincronizado com um banco de dados de sua preferência. 
+  <h3 align="center">
+    Gopher ToDo List API
+  </h3>
+</p>
 
- Fique livre para utilizar qualquer o banco de sua preferência, como: Postgres, MySQL, SQLite e MongoDB. Neste caso, você estará construindo uma API para que outras aplicações integrem com a sua. Aqui você vai mostrar seu talento para um projeto em backend, onde a boa performance e o bom funcionamento são os pontos que importam. Se você tiver conhecimento de testes de software, ﬁque a vontade para criar casos de testes e cobrir seu código, esse é um ponto opcional para o desenvolvimento da sua aplicação.
- 
- ### Requisitos
+## :page_facing_up: About
 
- A sua API Rest deve possuir endpoints que dê suporte às seguintes ações: 
+Gopher ToDo List API is a REST API developed to manage a to-do list. The API was developed using Go and PostgreSQL. The API is available on [Heroku](https://gopher-todo-list-api.herokuapp.com/).
 
+## :bulb: Motivation
 
-- O usuário pode criar/editar tarefas;
-- O usuário pode deletar tarefas;
-- O usuário pode listar todas as suas tarefas ou aplicar ﬁltro de status;
-- O usuário pode completar tarefas, que são movidas para uma outra listagem;
-- O usuário pode restaurar tarefas já completadas, fazendo assim com que elas
-voltem para a listagem principal;
+I developed this API with the purpose of putting into practice my studies of the Go language, as well as my knowledge of software architecture. In this specific API, I used the clean architecture to separate the responsibilities of each layer of the application and make it more decoupled. In this API, it's possible to replace, for example, the database without many side effects, since everything is interconnected through interfaces.
 
-Como esse projeto precisa ser mantido futuramente (assim como qualquer outro ), seja por você ou por outro membro da equipe, uma documentação é necessária. Então escreva a documentação da forma que achar necessário e suﬁciente para um outro desenvolvedor continuar o projeto. A Documentação das APIs devem ser feitas a partir do swagger.
+## :rocket: Technologies used
+The project was developed using the following technologies:
 
-Para esse teste, preferimos que você não utilize frameworks que possuem implementações de API e comunicação de banco de dados prontas, preferimos que você as implemente do zero. Para a utilização das APIs, é essencial o uso do Postman para testes e utilização, então tal arquivo deve ser fornecido no repositório para que qualquer pessoa consiga executá-las.
+- [<img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go" />](https://golang.org/)
+- [<img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />](https://www.postgresql.org/)
+- [<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />](https://www.docker.com/)
 
-## Projeto Prévio 
+## :warning: Prerequisites
+>To run the project locally, you must have installed:
+- [Go](https://golang.org/) - v1.20
+- [PostgreSQL](https://www.postgresql.org/) - (or use [Docker](https://www.docker.com/))
 
-O projeto já contem um arquivo `Dockerfile` para criação de um container `Go` e um server preliminar com um único endpoint mostrando data e hora atual.
+>To run the project into a container, you must have installed:
+- [Docker](https://www.docker.com/)
 
-É necessário que o candidato tenha o docker instalado
+## :cd: Usage
+### How to run for development
 
-## Instruções
+1. Clone this repository and install all dependencies.
 
-Para criar a imagem 
+```bash
+$ git clone https://https://github.com/WillianBL99/gopher-todo-list.git
 
-1.
-``` bash
-sudo docker build -t todolist_aplication .
+$ cd gopher-todo-list
+
+$ go mod download
 ```
 
-Para iniciar o server 
+2. Create and configure the `.env` file based on the `.env.example` file.
 
-``` bash
-sudo docker run -it --rm -p 3000:3000 todolist_aplication
+3. Create a PostgreSQL database with any name you like, or create a container with Docker. The repository contains the `create-tables.sql` file that is in `pkg/infra/db/postgresql` for creating the tables. Remember to correctly configure the `.env` file.
+
+    ```bash
+    # Create tables with the create-tables.sql file
+    $ psql -U postgres -d <database-name> -a -f create-tables.sql
+    
+    # Or create a container with Docker
+    $ docker run --name <container-name> -e POSTGRES_PASSWORD=<password> -p 5432:5432 -d postgres
+    ```
+
+4. Run the API
+
+    ```bash
+    $ go run ./cmd/todolist
+    ```
+
+The API will display `Server running on port <port>`, if everything is correct.
+
+### How to run tests for development
+
+1. Run the command below to run the tests.
+
+```bash
+$ go test ./...
 ```
 
-2.
-Ou com auxilio do script
+### How to run for production (Docker)
 
-``` bash
-sudo sh init.sh
+There are two ways to run the API using docker. The first is running the script `start.sh` that is in the root of the project. The second is running the docker-compose file.
+
+#### Using the start.sh script
+1. Run the command below to run the script.
+
+```bash
+# Give permission to the script
+$ chmod +x start.sh
+# Run the script
+$ ./start.sh
 ```
 
-### Para rodar localmente
+#### Using docker-compose
+1. Run the command below to run the docker-compose file.
 
-1. Instale o Go
-2. Instale o Postgres
-3. Faça uma cópia do arquivo `.env.example` para `.env`
-4. Rode o comando `make server`
+```bash
+$ docker-compose up
+```
+2. Create the tables in the database.
+
+```bash
+$ docker exec -it pg_db psql -U postgres -d todo_list -a -f create-tables.sql
+```
+
+## :twisted_rightwards_arrows: Available routes in the API
+
+### Auth
+- `POST /auth/sign-up`: Create a new user.
+- `POST /auth/sign-in`: Authenticate a user.
+
+### Tasks
+- `GET /tasks`: Get all tasks.
+- `GET /task/{id}`: Get a task by id.
+- `POST /task`: Create a new task.
+- `PUT /task/{id}`: Update a task by id.
+- `DELETE /task/{id}`: Delete a task by id.
+
+## :star: Curiosities
+
+The repository has some scripts to automate some processes.
+- `start.sh`: [Linux] Script to start the API. It's possible to start the API and execute the cron jobs to generate the backups of the database.
+  
+  ```bash
+    # Start the API
+    $ ./start.sh
+
+    # Or start the API and execute cron jobs
+    $ ./start.sh --cron
+    ```
+- `cron.sh`: [Linux] Script to execute the cron jobs to generate the backups of the database.
+  
+  ```bash
+    # Execute cron jobs
+    $ ./cron.sh
+
+    # Execute cron jobs and set the time interval
+    $ ./cron.sh -t 3 # 3 hours
+
+    # Or execute cron jobs only once
+    $ ./cron.sh -o
+    
+## :page_facing_up: License
+
+### MIT License
+
+[:outbox_tray:](#----repoprovas--)
+
+---
+Desenvolvido por **Paulo Uilian Barros Lago**🧑🏻‍💻

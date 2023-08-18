@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   pg_db:
     image: postgres
@@ -11,10 +11,12 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_DB: "todo_list"
     volumes:
-      - db:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
   go_app:
     build: .
     container_name: go_app
+    ports:
+      - 3020:3000
     depends_on:
       - pg_db
     environment:
@@ -26,5 +28,5 @@ services:
       DB_NAME: todo_list
 
 volumes:
-  db:
+  pgdata:
   

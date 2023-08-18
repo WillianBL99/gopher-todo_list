@@ -11,7 +11,7 @@ import (
 func TestUpdateTask_Execute(t *testing.T) {
 	t.Run("Should update task title, description and due date", func(t *testing.T) {
 		rp := inmemory.TaskRepositoryInMemory{}
-		ut := UpdateTask{Repository: &rp}
+		ut := UpdateTask{TaskRepository: &rp}
 		user_id := uuid.New()
 		tk := entity.NewTask(uuid.New(), "Title", "Description", user_id)
 		ntk := entity.NewTask(tk.Id, "New Title", "New Description", user_id)

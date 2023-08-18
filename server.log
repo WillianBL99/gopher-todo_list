@@ -1,0 +1,13 @@
+Conn. string: postgres://postgres:admin@localhost:2345/todo_list?sslmode=disable&TimeZone=America/Sao_Paulo
+Database connected
+Server running on port: 3000
+panic: listen tcp :3000: bind: address already in use
+
+goroutine 1 [running]:
+github.com/willianbl99/todo-list_api/pkg/herr.CheckError(...)
+	/home/uiliandev/Estudos/GithubProjects/gopher-todo_list/pkg/herr/error.go:83
+github.com/willianbl99/todo-list_api/pkg/infra/http.(*HttpMod).Start(0xc000131f60)
+	/home/uiliandev/Estudos/GithubProjects/gopher-todo_list/pkg/infra/http/http_mod.go:33 +0x1ab
+main.main()
+	/home/uiliandev/Estudos/GithubProjects/gopher-todo_list/cmd/todolist/main.go:12 +0x47
+exit status 2

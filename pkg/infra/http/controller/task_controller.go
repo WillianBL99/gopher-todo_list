@@ -25,20 +25,22 @@ type TaskController struct {
 }
 
 func NewTaskController(r repository.TaskRepository) *TaskController {
-	tc := &TaskController{}
-	tc.Providers.SaveTask = usecase.SaveTask{r}
-	tc.Providers.UpdateTask = usecase.UpdateTask{r}
-	tc.Providers.DeleteTask = usecase.DeleteTask{r}
-	tc.Providers.GetAllTasks = usecase.GetAllTasks{r}
-	tc.Providers.GetTasksByStatus = usecase.GetTasksByStatus{r}
-	tc.Providers.MoveTask = usecase.MoveTask{r}
+	tc := &TaskController{
+		Repository: r,
+	}
+	tc.Providers.SaveTask = usecase.SaveTask{TaskRepository: r}
+	tc.Providers.UpdateTask = usecase.UpdateTask{TaskRepository: r}
+	tc.Providers.DeleteTask = usecase.DeleteTask{TaskRepository: r}
+	tc.Providers.GetAllTasks = usecase.GetAllTasks{TaskRepository: r}
+	tc.Providers.GetTasksByStatus = usecase.GetTasksByStatus{TaskRepository: r}
+	tc.Providers.MoveTask = usecase.MoveTask{TaskRepository: r}
 
 	return tc
 }
 
 func (tc *TaskController) SaveTask(w http.ResponseWriter, r *http.Request) {
 	st := dto.SaveTaskBodyRequest{}
-	
+
 	if err := dto.ToDTO(r, &st); err != nil {
 		herr.BadBodyRequest(w, err)
 		return

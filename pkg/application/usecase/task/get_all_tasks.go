@@ -7,7 +7,7 @@ import (
 )
 
 type GetAllTasks struct {
-	TasksRepository repository.TaskRepository
+	TaskRepository repository.TaskRepository
 }
 
 func (g *GetAllTasks) Execute(uid string) ([]entity.Task, error) {
@@ -16,7 +16,7 @@ func (g *GetAllTasks) Execute(uid string) ([]entity.Task, error) {
 		return nil, err
 	}
 
-	tasks, err := g.TasksRepository.GetAll(puid)
+	tasks, err := g.TaskRepository.GetAll(puid)
 	if err != nil {
 		return nil, err
 	}

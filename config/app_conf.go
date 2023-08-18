@@ -2,9 +2,8 @@ package config
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/joho/godotenv"
+	"os"
 )
 
 type API struct {
@@ -15,11 +14,9 @@ func newAPI() *API {
 	api := API{
 		Port: goEnvVar("API_PORT"),
 	}
-
 	if api.Port == "" {
 		api.Port = "4000"
 	}
-
 	return &api
 }
 
@@ -45,20 +42,18 @@ func newDatabase() *Database {
 		db.User == "" ||
 		db.Password == "" ||
 		db.Name == "" {
-			db.Host = "localhost"
-			db.Port = "5432"
-			db.User = "postgres"
-			db.Password = "admin"
-			db.Name = "todo_list"
-		//panic("Database configuration not found")
+		db.Host = "localhost"
+		db.Port = "5432"
+		db.User = "postgres"
+		db.Password = "admin"
+		db.Name = "todo_list"
 	}
-
 	return &db
 }
 
 func (d *Database) ConnStr() string {
 	return fmt.Sprintf(
-		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable&TimeZone=America/Sao_Paulo",
 		d.User,
 		d.Password,
 		d.Host,

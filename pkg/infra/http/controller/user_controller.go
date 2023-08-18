@@ -13,45 +13,30 @@ import (
 
 type UserController struct {
 	Providers struct {
-		SaveUser usecase.SaveUser
+		SaveUser               usecase.SaveUser
 		GetUserByEmailPassword usecase.GetUserByEmailPassword
 	}
-	Repository repository.UserRepository	
+	Repository repository.UserRepository
 }
 
 func NewUserController(r repository.UserRepository) *UserController {
 	uc := &UserController{}
-	uc.Providers.SaveUser = usecase.SaveUser{r}
-	uc.Providers.GetUserByEmailPassword = usecase.GetUserByEmailPassword{r}
-	
+	uc.Providers.SaveUser = usecase.SaveUser{UserRepository: r}
+	uc.Providers.GetUserByEmailPassword = usecase.GetUserByEmailPassword{UserRepository: r}
 	return uc
 }
 
-// Register registra um novo usuário
-// @Summary Registra um novo usuário
-// @Description Registra um novo usuário
-// @Tags User
-// @Accept json
-// @Produce json
-// @Param body body dto.RegisterUserRequest true "Dados do usuário"
-// @Success 201 {object} dto.RegisterUserResponse
-// @Failure 400 {object} dto.ErrorResponse
-// @Failure 500 {object} dto.ErrorResponse
-// @Router /sign-up [post]
 func (uc *UserController) Register(w http.ResponseWriter, r *http.Request) {
 	var ru dto.RegisterUserRequest
-
 	if err := dto.ToDTO(r, &ru); err != nil {
 		herr.BadBodyRequest(w, err)
 		return
 	}
-
 	err := uc.Providers.SaveUser.Execute(ru.Name, ru.Email, ru.Password)
 	if err != nil {
 		herr.AppToHttp(w, err)
 		return
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	fmt.Fprintf(w, `{"message": "User created successfully"}`)
@@ -59,25 +44,21 @@ func (uc *UserController) Register(w http.ResponseWriter, r *http.Request) {
 
 func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	var lu dto.LoginUserRequest
-
 	if err := dto.ToDTO(r, &lu); err != nil {
 		herr.BadBodyRequest(w, err)
 		return
 	}
-
 	u, err := uc.Providers.GetUserByEmailPassword.Execute(lu.Email, lu.Password)
 	if err != nil {
 		herr.AppToHttp(w, err)
 		return
 	}
-
 	jwt := server.NewJwtService()
 	token, err := jwt.GenerateToken(u.Id.String())
 	if err != nil {
 		herr.NewHttp().InternalServerError(w)
 		return
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, `{"token": "%s"}`, token)

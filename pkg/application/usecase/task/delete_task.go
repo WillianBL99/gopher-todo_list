@@ -14,6 +14,5 @@ func (d *DeleteTask) Execute(id string) error {
 	if err != nil {
 		return err
 	}
-
 	return d.TaskRepository.Delete(pid)
 }

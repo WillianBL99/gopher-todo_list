@@ -1,16 +1,17 @@
 package entity
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type Base struct {
-	Id        uuid.UUID `json:"id"`
-	CreatedAt time.Time `json:"created_at"`
-	DeletedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"modified_at"`
+	Id        uuid.UUID    `json:"id"`
+	CreatedAt time.Time    `json:"created_at"`
+	DeletedAt sql.NullTime `json:"-"`
+	UpdatedAt sql.NullTime `json:"modified_at"`
 }
 
 func (b *Base) New(id uuid.UUID) {

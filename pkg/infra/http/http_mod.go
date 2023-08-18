@@ -11,24 +11,24 @@ import (
 )
 
 type HttpMod struct {
-	DBModule *db.DbMod
+	DBModule  *db.DbMod
 	RouterMod *router.RouterMod
 }
 
 func NewHttpMod(dbmod *db.DbMod) *HttpMod {
 	return &HttpMod{
-		DBModule: dbmod,
+		DBModule:  dbmod,
 		RouterMod: router.NewRouterMod(dbmod),
 	}
 }
 
 func (hm *HttpMod) Start() {
 	apicf := config.NewAppConf().API
-	port := fmt.Sprintf(":%s", apicf.Port)
+	port := fmt.Sprint(apicf.Port)
 
 	rt := hm.RouterMod.Start(hm.DBModule)
 
 	fmt.Println("Server running on port: " + port)
-	err := http.ListenAndServe(port, rt)
+	err := http.ListenAndServe(":"+port, rt)
 	herr.CheckError(err)
 }

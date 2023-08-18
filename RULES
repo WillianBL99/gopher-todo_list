@@ -1,0 +1,2 @@
+/usr/lib/postgresql/15/bin/pg_dump: unrecognized option '--roles-only'
+pg_dump: hint: Try "pg_dump --help" for more information.
