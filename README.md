@@ -3,10 +3,11 @@
     <img src="https://github.com/WillianBL99/gopher-todo_list/assets/65803142/fc32a68b-929e-4849-8f66-d5d875f5456f" width="180" >
   </a>
 
-  <h3 align="center">
+  <h1 align="center">
     Gopher ToDo List API
   </h3>
 </p>
+</br>
 
 ## :page_facing_up: About
 
