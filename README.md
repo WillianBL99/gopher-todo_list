@@ -1,12 +1,13 @@
 <p align="center">
   <a href="https://github.com/WillianBL99/repo-provas">
-    <img src="https://icon-library.com/images/android-file-icon/android-file-icon-4.jpg" alt="readme-logo" width="180" >
+    <img src="https://github.com/WillianBL99/gopher-todo_list/assets/65803142/fc32a68b-929e-4849-8f66-d5d875f5456f" width="180" >
   </a>
 
-  <h3 align="center">
+  <h1 align="center">
     Gopher ToDo List API
   </h3>
 </p>
+</br>
 
 ## :page_facing_up: About
 
@@ -32,7 +33,7 @@ The project was developed using the following technologies:
 - [Docker](https://www.docker.com/)
 
 ## :cd: Usage
-### How to run for development
+### How to run for development (Locally)
 
 1. Clone this repository and install all dependencies.
 
@@ -64,7 +65,7 @@ $ go mod download
 
 The API will display `Server running on port <port>`, if everything is correct.
 
-### How to run tests for development
+### How to run tests for development (Locally)
 
 1. Run the command below to run the tests.
 
@@ -72,7 +73,7 @@ The API will display `Server running on port <port>`, if everything is correct.
 $ go test ./...
 ```
 
-### How to run for production (Docker)
+### How to run for development (Docker)
 
 There are two ways to run the API using docker. The first is running the script `start.sh` that is in the root of the project. The second is running the docker-compose file.
 
@@ -96,6 +97,22 @@ $ docker-compose up
 
 ```bash
 $ docker exec -it pg_db psql -U postgres -d todo_list -a -f create-tables.sql
+```
+
+### How to run tests for development (Docker)
+1. Run the command below to run the tests.
+
+```bash
+$ docker exec -it go_api go test ./...
+```
+
+### How to run for production (Docker)
+For to run the API in production, you must have installed [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/).
+1. Update the `.env` file with the production environment variables. Provide the connection variables to the PostgreSQL database.
+2. Run the command below to run the docker-compose file.
+
+```bash
+$ docker-compose -f docker-compose.prod.yml up
 ```
 
 ## :twisted_rightwards_arrows: Available routes in the API

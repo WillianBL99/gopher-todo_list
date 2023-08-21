@@ -5,27 +5,27 @@ services:
     container_name: pg_db
     restart: always
     ports:
-      - 2345:5432
+      - ${DB_PORT}:5432
     environment:
-      POSTGRES_PASSWORD: "admin"
-      POSTGRES_USER: "postgres"
-      POSTGRES_DB: "todo_list"
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
   go_app:
     build: .
     container_name: go_app
     ports:
-      - 3020:3000
+      - 3002:${API_PORT}
     depends_on:
       - pg_db
     environment:
-      APP_PORT: 3000
-      DB_HOST: pg_db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: admin
-      DB_NAME: todo_list
+      - API_PORT=${API_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
 
 volumes:
   pgdata:

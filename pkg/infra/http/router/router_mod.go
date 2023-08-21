@@ -32,8 +32,8 @@ func (rm *RouterMod) Start(dbmod *db.DbMod) chi.Router {
 	r.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:3000/swagger/doc.json"),
 	))
-	UserRouter(r, ur)
 	TaskRouter(r, tr, md)
+	UserRouter(r, ur)
 
 	return r
 }

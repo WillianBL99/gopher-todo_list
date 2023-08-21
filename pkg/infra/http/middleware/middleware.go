@@ -53,7 +53,7 @@ func (m *Middleware) Auth(next http.Handler) http.Handler {
 			return
 		} else {
 			if _, err := m.UserRepository.GetById(puid); err != nil {
-				herr.AppToHttp(w, err)
+				herr.NewHttp().Unauthorized(w)
 				return
 			}
 		}

@@ -1,5 +1,3 @@
-CREATE DATABASE todo_list;
-\c todo_list;
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,

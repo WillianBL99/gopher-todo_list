@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  go_app:
+    build: .
+    container_name: go_app
+    ports:
+      - ${API_PORT}:${API_PORT}
+    environment:
+      # get the value from .env file
+      - PORT=${API_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+  

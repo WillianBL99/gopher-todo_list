@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	getalltqy  = `SELECT id, user_id, title, description, status FROM tasks WHERE user_id = $1`
-	getbysttqy = `SELECT id, user_id, title, description, status FROM tasks WHERE user_id = $1 AND status = $2`
-	getbyidtqy = `SELECT id, user_id, title, description, status FROM tasks WHERE id = $1`
+	getalltqy  = `SELECT * FROM tasks WHERE user_id = $1 AND deleted_at IS NULL`
+	getbysttqy = `SELECT * FROM tasks WHERE user_id = $1 AND status = $2`
+	getbyidtqy = `SELECT * FROM tasks WHERE id = $1`
 	savetqy    = `
 		INSERT INTO tasks (id, user_id, title, description, status, created_at) 
 		VALUES ($1, $2, $3, $4, $5, $6)`
@@ -20,7 +20,7 @@ const (
 		UPDATE tasks
 			SET title=$2, description=$3, status=$4, updated_at=$5
 			WHERE id = $1`
-	deletetqy = `DELETE FROM tasks WHERE id = $1`
+	deletetqy = `UPDATE tasks SET deleted_at=$2 WHERE id = $1`
 )
 
 type TaskRepositoryPostgres struct {
@@ -32,6 +32,7 @@ func (tp *TaskRepositoryPostgres) GetAll(userId uuid.UUID) ([]entity.Task, error
 	if err != nil {
 		return nil, err
 	}
+	defer rws.Close()
 
 	tasks := make([]entity.Task, 0)
 
@@ -39,10 +40,13 @@ func (tp *TaskRepositoryPostgres) GetAll(userId uuid.UUID) ([]entity.Task, error
 		t := entity.Task{}
 		err = rws.Scan(
 			&t.Id,
-			&t.UserId,
+			&t.CreatedAt,
+			&t.UpdatedAt,
+			&t.DeletedAt,
 			&t.Title,
-			&t.Description,
 			&t.Status,
+			&t.UserId,
+			&t.Description,
 		)
 		if err != nil {
 			return nil, err
@@ -58,12 +62,22 @@ func (tp *TaskRepositoryPostgres) GetByStatus(userId uuid.UUID, status entity.St
 	if err != nil {
 		return nil, err
 	}
+	defer rws.Close()
 
 	tasks := make([]entity.Task, 0)
 
 	for rws.Next() {
 		t := entity.Task{}
-		err = rws.Scan(&t.Id, &t.UserId, &t.Title, &t.Description, &t.Status)
+		err = rws.Scan(
+			&t.Id,
+			&t.CreatedAt,
+			&t.UpdatedAt,
+			&t.DeletedAt,
+			&t.Title,
+			&t.Status,
+			&t.UserId,
+			&t.Description,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -78,16 +92,25 @@ func (tp *TaskRepositoryPostgres) GetById(id uuid.UUID) (entity.Task, error) {
 	if err != nil {
 		return entity.Task{}, err
 	}
+	defer rw.Close()
 
 	t := entity.Task{}
 
 	rw.Next()
-	err = rw.Scan(&t.Id, &t.UserId, &t.Title, &t.Description, &t.Status)
+	err = rw.Scan(
+		&t.Id,
+		&t.CreatedAt,
+		&t.UpdatedAt,
+		&t.DeletedAt,
+		&t.Title,
+		&t.Status,
+		&t.UserId,
+		&t.Description,
+	)
 	if err != nil {
 		return entity.Task{}, err
 	}
 
-	defer rw.Close()
 	return t, nil
 }
 
@@ -109,7 +132,7 @@ func (tp *TaskRepositoryPostgres) Save(t *entity.Task) error {
 }
 
 func (tp *TaskRepositoryPostgres) Delete(id uuid.UUID) error {
-	rw, err := tp.Server.Query(deletetqy, id)
+	rw, err := tp.Server.Query(deletetqy, id, time.Now())
 	if err != nil {
 		return herr.NewApp().Conflict
 	}

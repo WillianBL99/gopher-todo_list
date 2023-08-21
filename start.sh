@@ -6,12 +6,19 @@ help() {
     echo "  --help: show help"
     echo "  --cron: run cron job"
     echo "    > for stop the cron job, run: ./cron.sh -s"
+    echo " --build: build docker image"
     exit 0
 }
 
 
-# Run docker compose
-docker-compose up -d
+# Run docker compose, if option --build is passed, build image
+if [ $OPT == "--build" ]; then
+    echo "[docker] Building image..."
+    docker-compose up --build -d
+else
+    echo "[docker] Starting container..."
+    docker-compose up -d
+fi
 
 waitContainer() {
     echo "[test] Waiting for container to start..."

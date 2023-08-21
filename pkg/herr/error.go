@@ -24,6 +24,7 @@ const (
 	Invalid_Task_Status       = "Invalid Task Status"
 	Invalid_User_Id           = "Invalid User Id"
 	Email_Or_Password_Invalid = "Email Or Password Invalid"
+	Database_Error            = "Database Error"
 )
 
 func AppToHttp(w http.ResponseWriter, err error) {

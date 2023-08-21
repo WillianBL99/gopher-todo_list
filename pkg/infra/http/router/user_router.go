@@ -8,7 +8,6 @@ import (
 
 func UserRouter(r chi.Router, ur repository.UserRepository) {
 	uc := controller.NewUserController(ur)
-
 	r.Post("/sign-up", uc.Register)
 	r.Post("/sign-in", uc.Login)
 }

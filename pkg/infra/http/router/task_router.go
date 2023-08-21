@@ -14,7 +14,6 @@ func TaskRouter(
 	md *middleware.Middleware,
 ) {
 	tc := controller.NewTaskController(tr)
-
 	r.Route("/tasks", func(r chi.Router) {
 		r.Use(md.Auth)
 
