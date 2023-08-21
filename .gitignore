@@ -5,6 +5,11 @@
 *.so
 *.dylib
 
+# Other files
+server.log
+.vscode
+*/backup.sql
+
 # Test binary, built with `go test -c`
 *.test
 

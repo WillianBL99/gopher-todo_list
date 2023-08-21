@@ -14,11 +14,12 @@ type AppError struct {
 	Conflict               funcAppError
 	BadRequest             funcAppError
 	EmailAlreadyExists     funcAppError
-	InvalidToken					 funcAppError
+	InvalidToken           funcAppError
 	InvalidTaskId          funcAppError
 	InvalidTaskStatus      funcAppError
 	InvalidUserId          funcAppError
 	EmailOrPasswordInvalid funcAppError
+	DatabaseError          funcAppError
 }
 
 func NewApp() *AppError {
@@ -34,6 +35,7 @@ func NewApp() *AppError {
 		InvalidTaskStatus:      defaultAppError(Invalid_Task_Status, "Invalid task status, please check the params and try again."),
 		InvalidUserId:          defaultAppError(Invalid_User_Id, "Invalid user id, please check the params and try again."),
 		EmailOrPasswordInvalid: defaultAppError(Email_Or_Password_Invalid, "Email or password invalid, please check the params and try again."),
+		DatabaseError:          defaultAppError(Database_Error, "Database error, please try again later."),
 	}
 }
 

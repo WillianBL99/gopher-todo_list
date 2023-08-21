@@ -1,0 +1,10 @@
+# ignore all go test files
+*/**/*_test.go
+test
+
+# ignore all unnecessary files
+README.md
+LICENSE
+Makefile
+*_collection.json
+.vscode
