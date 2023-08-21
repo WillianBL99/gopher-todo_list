@@ -37,13 +37,13 @@ The project was developed using the following technologies:
 
 1. Clone this repository and install all dependencies.
 
-```bash
-$ git clone https://https://github.com/WillianBL99/gopher-todo-list.git
+    ```bash
+    $ git clone https://https://github.com/WillianBL99/gopher-todo-list.git
 
-$ cd gopher-todo-list
+    $ cd gopher-todo-list
 
-$ go mod download
-```
+    $ go mod download
+    ```
 
 2. Create and configure the `.env` file based on the `.env.example` file.
 
@@ -69,9 +69,9 @@ The API will display `Server running on port <port>`, if everything is correct.
 
 1. Run the command below to run the tests.
 
-```bash
-$ go test ./...
-```
+    ```bash
+    $ go test ./...
+    ```
 
 ### How to run for development (Docker)
 
@@ -80,40 +80,40 @@ There are two ways to run the API using docker. The first is running the script 
 #### Using the start.sh script
 1. Run the command below to run the script.
 
-```bash
-# Give permission to the script
-$ chmod +x start.sh
-# Run the script
-$ ./start.sh
-```
+    ```bash
+    # Give permission to the script
+    $ chmod +x start.sh
+    # Run the script
+    $ ./start.sh
+    ```
 
 #### Using docker-compose
 1. Run the command below to run the docker-compose file.
 
-```bash
-$ docker-compose up
-```
+    ```bash
+    $ docker-compose up
+    ```
 2. Create the tables in the database.
 
-```bash
-$ docker exec -it pg_db psql -U postgres -d todo_list -a -f create-tables.sql
-```
+    ```bash
+    $ docker exec -it pg_db psql -U postgres -d todo_list -a -f create-tables.sql
+    ```
 
 ### How to run tests for development (Docker)
 1. Run the command below to run the tests.
 
-```bash
-$ docker exec -it go_api go test ./...
-```
+    ```bash
+    $ docker exec -it go_api go test ./...
+    ```
 
 ### How to run for production (Docker)
 For to run the API in production, you must have installed [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/).
 1. Update the `.env` file with the production environment variables. Provide the connection variables to the PostgreSQL database.
 2. Run the command below to run the docker-compose file.
 
-```bash
-$ docker-compose -f docker-compose.prod.yml up
-```
+    ```bash
+    $ docker-compose -f docker-compose.prod.yml up
+    ```
 
 ## :twisted_rightwards_arrows: Available routes in the API
 
