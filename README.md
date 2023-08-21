@@ -11,7 +11,7 @@
 
 ## :page_facing_up: About
 
-Gopher ToDo List API is a REST API developed to manage a to-do list. The API was developed using Go and PostgreSQL. The API is available on [Heroku](https://gopher-todo-list-api.herokuapp.com/).
+Gopher ToDo List API is a REST API developed to manage a to-do list. The API was developed using Go and PostgreSQL. The API is available on [Render](https://gopher-todolist.onrender.com/).
 
 ## :bulb: Motivation
 
