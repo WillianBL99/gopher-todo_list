@@ -5,15 +5,15 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/willianbl99/todo-list_api/pkg/application/entity"
-	"github.com/willianbl99/todo-list_api/pkg/herr"
+	"github.com/willianbl99/todo-list_api/internal/application/entity"
+	e "github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type TaskRepositoryInMemory struct {
 	tasks []entity.Task
 }
 
-func (r *TaskRepositoryInMemory) GetAll(userId uuid.UUID) ([]entity.Task, error) {
+func (r *TaskRepositoryInMemory) GetAll(userId uuid.UUID) ([]entity.Task, *e.Error) {
 	tks := make([]entity.Task, 0, 5)
 
 	for _, t := range r.tasks {
@@ -25,7 +25,7 @@ func (r *TaskRepositoryInMemory) GetAll(userId uuid.UUID) ([]entity.Task, error)
 	return tks, nil
 }
 
-func (r *TaskRepositoryInMemory) GetByStatus(userId uuid.UUID, status entity.Status) ([]entity.Task, error) {
+func (r *TaskRepositoryInMemory) GetByStatus(userId uuid.UUID, status entity.Status) ([]entity.Task, *e.Error) {
 	tks := make([]entity.Task, 0, 5)
 
 	for _, t := range r.tasks {
@@ -37,27 +37,39 @@ func (r *TaskRepositoryInMemory) GetByStatus(userId uuid.UUID, status entity.Sta
 	return tks, nil
 }
 
-func (r *TaskRepositoryInMemory) GetById(id uuid.UUID) (entity.Task, error) {
+func (r *TaskRepositoryInMemory) GetById(id uuid.UUID) (entity.Task, *e.Error) {
 	for _, t := range r.tasks {
 		if id == t.Id {
 			return t, nil
 		}
 	}
 
-	return entity.Task{}, herr.NewApp().TaskNotFound
+	return entity.Task{}, e.New().SetLayer(e.InfraTest).CustomError(e.TaskNotFound)
 }
 
-func (r *TaskRepositoryInMemory) Save(t *entity.Task) error {
+func (r *TaskRepositoryInMemory) GetByList(id uuid.UUID, listName string) ([]entity.Task, *e.Error) {
+	tks := make([]entity.Task, 0, 5)
+
+	for _, t := range r.tasks {
+		if id == t.UserId && listName == t.List && !t.DeletedAt.Valid {
+			tks = append(tks, t)
+		}
+	}
+
+	return tks, nil
+}
+
+func (r *TaskRepositoryInMemory) Save(t *entity.Task) (entity.Task, *e.Error) {
 	r.tasks = append(r.tasks, *t)
 
-	return nil
+	return *t, nil
 }
 
-func (r *TaskRepositoryInMemory) Delete(id uuid.UUID) error {
+func (r *TaskRepositoryInMemory) Delete(id uuid.UUID) *e.Error {
 	for n, t := range r.tasks {
 		if id == t.Id {
 			if t.DeletedAt.Valid {
-				return herr.NewApp().Conflict
+				return e.New().SetLayer(e.InfraTest).CustomError(e.Conflict)
 			}
 			r.tasks[n].DeletedAt = sql.NullTime{Time: time.Now(), Valid: true}
 			break
@@ -67,7 +79,7 @@ func (r *TaskRepositoryInMemory) Delete(id uuid.UUID) error {
 	return nil
 }
 
-func (r *TaskRepositoryInMemory) Update(t *entity.Task) error {
+func (r *TaskRepositoryInMemory) Update(t *entity.Task) *e.Error {
 	for n, rt := range r.tasks {
 		if rt.Id == t.Id {
 			r.tasks[n] = *t

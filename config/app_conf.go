@@ -2,17 +2,32 @@ package config
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"os"
+	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 type API struct {
-	Port string `json:"port"`
+	Port       string `json:"port"`
+	URL        string `json:"url"`
+	BCryptCost int64  `json:"bcrypt_cost"`
+	JWTSecret  string `json:"jwt_secret"`
+	WorkDir    string `json:"work_dir"`
 }
 
 func newAPI() *API {
+	bcryptCost, err := strconv.ParseInt(goEnvVar("BCRYPT_COST"), 10, 36)
+	if err != nil {
+		bcryptCost = 10
+	}
+	wd, _ := os.Getwd()
 	api := API{
-		Port: goEnvVar("API_PORT"),
+		Port:       goEnvVar("API_PORT"),
+		URL:        goEnvVar("API_URL"),
+		BCryptCost: bcryptCost,
+		JWTSecret:  goEnvVar("JWT_SECRET"),
+		WorkDir:    fmt.Sprintf("%s/cmd/todolist/docs", wd),
 	}
 	if api.Port == "" {
 		api.Port = "4000"

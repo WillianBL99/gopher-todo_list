@@ -16,7 +16,7 @@ services:
     build: .
     container_name: go_app
     ports:
-      - 3002:${API_PORT}
+      - 3402:${API_PORT}
     depends_on:
       - pg_db
     environment:

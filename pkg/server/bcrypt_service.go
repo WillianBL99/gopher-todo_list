@@ -1,14 +1,17 @@
 package server
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"github.com/willianbl99/todo-list_api/config"
+	"golang.org/x/crypto/bcrypt"
+)
 
-type BcryptService struct{
+type BcryptService struct {
 	Cost int
 }
 
 func NewBcryptService() *BcryptService {
 	return &BcryptService{
-		Cost: 14,
+		Cost: int(config.NewAppConf().BCryptCost),
 	}
 }
 
