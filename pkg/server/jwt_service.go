@@ -1,10 +1,12 @@
 package server
 
 import (
+	"errors"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/willianbl99/todo-list_api/pkg/herr"
+	"github.com/willianbl99/todo-list_api/config"
+	e "github.com/willianbl99/todo-list_api/pkg/herr"
 )
 
 type JwtService struct {
@@ -14,8 +16,8 @@ type JwtService struct {
 
 func NewJwtService() *JwtService {
 	return &JwtService{
-		secretKey: "secret",
-		issuer:    "todo-list",
+		secretKey: config.NewAppConf().JWTSecret,
+		issuer:    config.NewAppConf().Database.Name,
 	}
 }
 
@@ -30,7 +32,7 @@ func (js *JwtService) GenerateToken(id string) (string, error) {
 
 	cl := token.Claims.(jwt.MapClaims)
 	cl["sum"] = id
-	cl["exp"] = time.Now().Add(ONE_DAY).Unix()
+	cl["exp"] = time.Now().Add(3 * time.Hour).Unix()
 	cl["iat"] = time.Now().Unix()
 	cl["iss"] = js.issuer
 
@@ -48,25 +50,26 @@ func (js *JwtService) ValidateToken(token string) bool {
 	return err == nil
 }
 
-func (js *JwtService) GetTokenId(token string) (string, error) {
-	tk, err := jwt.ParseWithClaims(token, &Claim{}, func(t *jwt.Token) (interface{}, error) {
+func (js *JwtService) GetTokenId(token string) (string, *e.Error) {
+	appErr := e.New().SetLayer(e.Application)
+	tk, er := jwt.ParseWithClaims(token, &Claim{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(js.secretKey), nil
 	})
 
-	if err != nil {
-		return "", herr.NewApp().InvalidToken
+	if er != nil {
+		return "", appErr.CustomError(e.InvalidToken)
 	}
 
 	if claims, ok := tk.Claims.(*Claim); ok && tk.Valid {
 		return claims.Sum, nil
 	}
 
-	return "", herr.NewApp().InvalidToken
+	return "", appErr.CustomError(e.InvalidToken)
 }
 
 func (js *JwtService) jwtValidate(t *jwt.Token) (interface{}, error) {
 	if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-		return nil, herr.NewApp().InvalidToken
+		return nil, errors.New(e.ExpiredToken.Title)
 	}
 
 	return []byte(js.secretKey), nil

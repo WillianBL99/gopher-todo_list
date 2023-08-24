@@ -1,0 +1,482 @@
+swagger: '2.0'
+info:
+  description: |
+    The Gopher Todo List API is a specification that defines a set of operations
+    to manage a todo list. It is designed to be simple to understand and
+    implement, with the goal of making it easy to develop a rich, interactive
+    application using Go and Swagger.
+    [http://swagger.io](http://swagger.io) or on 
+    [irc.freenode.net, #swagger](http://swagger.io/irc/).
+  version: 1.0.0
+  title: Gopher Todo List
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: gopher-todolist.onrender.com
+tags:
+- name: api
+  description: Information about the API
+- name: auth
+  description: Register and login
+- name: tasks
+  description: Access to tasks and lists
+schemes:
+- https
+paths:
+  /:
+    get:
+      tags:
+      - api
+      summary: API version
+      description: Information about the version of the API
+      operationId: getVersion
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+  /health:
+    get:
+      tags:
+      - api
+      summary: Health check
+      description: Health check
+      operationId: healthCheck
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+  /swagger:
+    get:
+      tags:
+      - api
+      summary: Swagger UI
+      description: Swagger UI
+      operationId: swaggerUI
+      produces:
+      - text/html
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+  /sing_up:
+    post:
+      tags:
+      - auth
+      summary: Register
+      description: Register a new user
+      operationId: register
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: User object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Register'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '400':
+          description: Bad Body Request
+          schema:
+            type: string
+        '409':
+          description: Email Already Exists
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+  /sing_in:
+    post:
+      tags:
+      - auth
+      summary: Login
+      description: Login with email and password
+      operationId: login
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: User object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Login'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '401':
+          description: Email Or Password Invalid
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+  /tasks:
+    get:
+      tags:
+      - tasks
+      summary: Get all tasks
+      description: Get all tasks
+      operationId: getTasks
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Task'
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+  /task:
+    post:
+      tags:
+      - tasks
+      summary: Create a task
+      description: Create a task
+      operationId: createTask
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Task object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Task'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PostTask'
+        '400':
+          description: Bad Body Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+    get:
+      tags:
+      - tasks
+      summary: Get a task
+      description: Get a task
+      operationId: getTask
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token
+        required: true
+        type: string
+      - name: id
+        in: query
+        description: Task id
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Task'
+        '400':
+          description: Bad Body Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '404':
+          description: Task Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+    put:
+      tags:
+      - tasks
+      summary: Update a task
+      description: Update a task
+      operationId: updateTask
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token
+        required: true
+        type: string
+      - name: id
+        in: query
+        description: Task id
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Task object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Task'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Body Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '404':
+          description: Task Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+    delete:
+      tags:
+      - tasks
+      summary: Delete a task
+      description: Delete a task
+      operationId: deleteTask
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token
+        required: true
+        type: string
+      - name: id
+        in: query
+        description: Task id
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '400':
+          description: Bad Body Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '404':
+          description: Task Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+  /task/done:
+    patch:
+      tags:
+      - tasks
+      summary: Mark a task as done
+      description: Mark a task as done
+      operationId: markTaskAsDone
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token
+        required: true
+        type: string
+      - name: id
+        in: query
+        description: Task id
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '400':
+          description: Bad Body Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '404':
+          description: Task Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+  /task/undone:
+    patch:
+      tags:
+      - tasks
+      summary: Mark a task as undone
+      description: Mark a task as undone
+      operationId: markTaskAsUndone
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: Token
+        required: true
+        type: string
+      - name: id
+        in: query
+        description: Task id
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+        '400':
+          description: Bad Body Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '404':
+          description: Task Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string  
+definitions:
+  Register:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  Login:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+  Task:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      list:
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+      status:
+        enum:
+        - done
+        - undone
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time 
+  PostTask:
+    type: object
+    properties:
+      list:
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
