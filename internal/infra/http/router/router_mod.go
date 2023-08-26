@@ -32,7 +32,8 @@ func (rm *RouterMod) Start(dbmod *db.DbMod) chi.Router {
 	r := chi.NewRouter()
 	r.Handle("/docs/*", http.StripPrefix("/docs/", handlerFiles))
 
-	r.Get("/", swagger())
+	// redirect / to /swagger/*
+	r.Get("/*", swagger())
 	r.Get("/health", healthCheck)
 	r.Get("/swagger/*", swagger())
 	TaskRouter(r, tr, md)
