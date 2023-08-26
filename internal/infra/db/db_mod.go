@@ -58,7 +58,7 @@ func (db *DbMod) initDatabase() {
 }
 
 func createDatabase(db *sql.DB) {
-	sqlFileContent, err := os.ReadFile("/app/pkg/infra/db/postgres/create-tables.sql")
+	sqlFileContent, err := os.ReadFile("/app/internal/infra/db/postgres/create-tables.sql")
 	if err != nil {
 		e.New().InfraDbErr(e.InternalServerError, err.Error()).Fatal()
 	}
