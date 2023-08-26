@@ -169,6 +169,7 @@ The repository has some scripts to automate some processes.
 - [ ] Add integration tests
 - [ ] Add OAuth2 authentication
 - [x] Dockerize the API
+- [ ] Integrate with logging tools
 - [ ] Add CI/CD
     
 ## :page_facing_up: License
