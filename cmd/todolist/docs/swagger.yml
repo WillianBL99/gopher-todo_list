@@ -1,26 +1,28 @@
 swagger: '2.0'
 info:
   description: |
-    The Gopher Todo List API is a specification that defines a set of operations
-    to manage a todo list. It is designed to be simple to understand and
-    implement, with the goal of making it easy to develop a rich, interactive
-    application using Go and Swagger.
-    [http://swagger.io](http://swagger.io) or on 
-    [irc.freenode.net, #swagger](http://swagger.io/irc/).
+    The **Gopher Todo List** API is a REST API that allows for the management of day-to-day tasks.
+    With this API, you can create, edit, delete, and list tasks. Additionally, you have the
+    ability to list tasks by status and by list categories.
+
+    This API has been developed using the **Go** programming language, utilizing the Chi framework
+    for routing and the Swaggo framework for documentation. The **PostgreSQL** database has been
+    employed for data storage.
+    
+    The purpose of this project is to provide an API that can facilitate the development of a
+    frontend application for task management. **If you're interested in contributing** to the
+    project, please feel free to do so. The source code is available on GitHub at the following
+    link: [github.com/willianbl99/gopher-todo_list](https://github.com/willianbl99/gopher-todo_list).
   version: 1.0.0
   title: Gopher Todo List
-  termsOfService: http://swagger.io/terms/
   contact:
-    email: apiteam@swagger.io
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    email: paulowiliandev@gmail.com
 host: gopher-todolist.onrender.com
 tags:
 - name: api
   description: Information about the API
 - name: auth
-  description: Register and login
+  description: RegisterResponse and login
 - name: tasks
   description: Access to tasks and lists
 schemes:
@@ -30,11 +32,11 @@ paths:
     get:
       tags:
       - api
-      summary: API version
-      description: Information about the version of the API
-      operationId: getVersion
+      summary: Swagger UI
+      description: Swagger UI
+      operationId: swaggerUI
       produces:
-      - application/json
+      - text/html
       responses:
         '200':
           description: successful operation
@@ -80,12 +82,12 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-  /sing_up:
+  /sing-up:
     post:
       tags:
       - auth
-      summary: Register
-      description: Register a new user
+      summary: RegisterResponse
+      description: RegisterResponse a new user
       operationId: register
       consumes:
       - application/json
@@ -97,7 +99,7 @@ paths:
         description: User object that needs to be added to the store
         required: true
         schema:
-          $ref: '#/definitions/Register'
+          $ref: '#/definitions/RegisterResponse'
       responses:
         '200':
           description: successful operation
@@ -115,12 +117,12 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-  /sing_in:
+  /sing-in:
     post:
       tags:
       - auth
-      summary: Login
-      description: Login with email and password
+      summary: LoginBody
+      description: LoginBody with email and password
       operationId: login
       consumes:
       - application/json
@@ -132,7 +134,7 @@ paths:
         description: User object that needs to be added to the store
         required: true
         schema:
-          $ref: '#/definitions/Login'
+          $ref: '#/definitions/LoginBody'
       responses:
         '200':
           description: successful operation
@@ -167,7 +169,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Task'
+              $ref: '#/definitions/TaskResponse'
         '401':
           description: Unauthorized
           schema:
@@ -195,15 +197,15 @@ paths:
         type: string
       - in: body
         name: body
-        description: Task object that needs to be added to the store
+        description: TaskResponse object that needs to be added to the store
         required: true
         schema:
-          $ref: '#/definitions/Task'
+          $ref: '#/definitions/TaskResponse'
       responses:
         '200':
           description: successful operation
           schema:
-            $ref: '#/definitions/PostTask'
+            $ref: '#/definitions/TaskBody'
         '400':
           description: Bad Body Request
           schema:
@@ -216,6 +218,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+  /task/{task_id}:
     get:
       tags:
       - tasks
@@ -232,14 +235,14 @@ paths:
         type: string
       - name: id
         in: query
-        description: Task id
+        description: TaskResponse id
         required: true
         type: string
       responses:
         '200':
           description: successful operation
           schema:
-            $ref: '#/definitions/Task'
+            $ref: '#/definitions/TaskBody'
         '400':
           description: Bad Body Request
           schema:
@@ -249,7 +252,7 @@ paths:
           schema:
             type: string
         '404':
-          description: Task Not Found
+          description: TaskResponse Not Found
           schema:
             type: string
         '500':
@@ -274,15 +277,15 @@ paths:
         type: string
       - name: id
         in: query
-        description: Task id
+        description: TaskResponse id
         required: true
         type: string
       - in: body
         name: body
-        description: Task object that needs to be added to the store
+        description: TaskResponse object that needs to be added to the store
         required: true
         schema:
-          $ref: '#/definitions/Task'
+          $ref: '#/definitions/TaskBody'
       responses:
         '200':
           description: successful operation
@@ -295,7 +298,7 @@ paths:
           schema:
             type: string
         '404':
-          description: Task Not Found
+          description: TaskResponse Not Found
           schema:
             type: string
         '500':
@@ -318,7 +321,7 @@ paths:
         type: string
       - name: id
         in: query
-        description: Task id
+        description: TaskResponse id
         required: true
         type: string
       responses:
@@ -335,14 +338,14 @@ paths:
           schema:
             type: string
         '404':
-          description: Task Not Found
+          description: TaskResponse Not Found
           schema:
             type: string
         '500':
           description: Internal Server Error
           schema:
             type: string
-  /task/done:
+  /task/{task_id}/done:
     patch:
       tags:
       - tasks
@@ -361,7 +364,7 @@ paths:
         type: string
       - name: id
         in: query
-        description: Task id
+        description: TaskResponse id
         required: true
         type: string
       responses:
@@ -378,14 +381,14 @@ paths:
           schema:
             type: string
         '404':
-          description: Task Not Found
+          description: TaskResponse Not Found
           schema:
             type: string
         '500':
           description: Internal Server Error
           schema:
             type: string
-  /task/undone:
+  /task/{task_id}/undone:
     patch:
       tags:
       - tasks
@@ -404,7 +407,7 @@ paths:
         type: string
       - name: id
         in: query
-        description: Task id
+        description: TaskResponse id
         required: true
         type: string
       responses:
@@ -421,7 +424,7 @@ paths:
           schema:
             type: string
         '404':
-          description: Task Not Found
+          description: TaskResponse Not Found
           schema:
             type: string
         '500':
@@ -429,7 +432,7 @@ paths:
           schema:
             type: string  
 definitions:
-  Register:
+  RegisterResponse:
     type: object
     properties:
       name:
@@ -438,14 +441,14 @@ definitions:
         type: string
       password:
         type: string
-  Login:
+  LoginBody:
     type: object
     properties:
       email:
         type: string
       password:
         type: string
-  Task:
+  TaskResponse:
     type: object
     properties:
       id:
@@ -468,7 +471,7 @@ definitions:
       updated_at:
         type: string
         format: date-time 
-  PostTask:
+  TaskBody:
     type: object
     properties:
       list:
@@ -477,6 +480,12 @@ definitions:
         type: string
       description:
         type: string
+  LoginResult:
+    type: object
+    properties:
+      token:
+        type: string
+        format: uuid
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
