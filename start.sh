@@ -37,7 +37,7 @@ waitContainer() {
 runTests() {
     waitContainer
     echo "[test] Waiting for tests to finish..."
-    until docker exec -i go_app go test ./pkg/application/usecase/...; do
+    until docker exec -i go_app go test ./internal/application/usecase/...; do
         sleep 0.2
     done
     if [ $? -eq 0 ]; then
@@ -56,7 +56,7 @@ esac
 
 # BASEDIR=$(pwd)
 # Run script to create dabase
-./pkg/infra/db/postgres/create-database.sh
+./internal/infra/db/postgres/create-database.sh
 # Run server
 echo "- Waiting for postgres server to start..."
 sleep 2

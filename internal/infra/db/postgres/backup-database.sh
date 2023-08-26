@@ -4,7 +4,7 @@ backup() {
     echo "Curren directory: $(pwd)"
     echo "Backup database..."
     TIMESTAMP=$(date +%Y%m%d%H%M%S)
-    BACKUP_DIR="./pkg/infra/db/postgres"
+    BACKUP_DIR="./internal/infra/db/postgres"
     BACKUP_FILE="$BACKUP_DIR/backup.sql"
 
     # verify if has postgres container

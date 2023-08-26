@@ -47,7 +47,7 @@ The project was developed using the following technologies:
 
 2. Create and configure the `.env` file based on the `.env.example` file.
 
-3. Create a PostgreSQL database with any name you like, or create a container with Docker. The repository contains the `create-tables.sql` file that is in `pkg/infra/db/postgresql` for creating the tables. Remember to correctly configure the `.env` file.
+3. Create a PostgreSQL database with any name you like, or create a container with Docker. The repository contains the `create-tables.sql` file that is in `internal/infra/db/postgresql` for creating the tables. Remember to correctly configure the `.env` file.
 
     ```bash
     # Create tables with the create-tables.sql file
@@ -116,16 +116,22 @@ For to run the API in production, you must have installed [Docker](https://www.d
     ```
 
 ## :twisted_rightwards_arrows: Available routes in the API
+Above are the available routes in the API. For more details, see the documentation available at [gopher-todolist.onrender.com](https://gopher-todolist.onrender.com/).
 
+### API
+- `GET /`: See the API documentation.
+- `GET /health`: Check the API health.
 ### Auth
 - `POST /auth/sign-up`: Create a new user.
 - `POST /auth/sign-in`: Authenticate a user.
 
 ### Tasks
 - `GET /tasks`: Get all tasks.
-- `GET /task/{id}`: Get a task by id.
 - `POST /task`: Create a new task.
+- `GET /task/{id}`: Get a task by id.
 - `PUT /task/{id}`: Update a task by id.
+- `PATCH /task/{id}/done`: Mark a task as done.
+- `PATCH /task/{id}/undone`: Mark a task as undone.
 - `DELETE /task/{id}`: Delete a task by id.
 
 ## :star: Curiosities
@@ -153,10 +159,7 @@ The repository has some scripts to automate some processes.
     $ ./cron.sh -o
     
 ## :page_facing_up: License
-
-### MIT License
-
-[:outbox_tray:](#----repoprovas--)
+This project is under the [MIT license](https://github.com/WillianBL99/gopher-todo_list/blob/main/LICENSE)
 
 ---
 Desenvolvido por **Paulo Uilian Barros Lago**🧑🏻‍💻
