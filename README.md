@@ -157,6 +157,16 @@ The repository has some scripts to automate some processes.
 
     # Or execute cron jobs only once
     $ ./cron.sh -o
+
+## :memo: To do
+- [x] Add unit tests for the use cases
+- [ ] Add unit tests for the repository implementation
+- [ ] Add unit tests for the controllers
+- [ ] Add unit tests for the handlers
+- [ ] Add integration tests
+- [ ] Add OAuth2 authentication
+- [x] Dockerize the API
+- [ ] Add CI/CD
     
 ## :page_facing_up: License
 This project is under the [MIT license](https://github.com/WillianBL99/gopher-todo_list/blob/main/LICENSE)
