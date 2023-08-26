@@ -26,27 +26,26 @@ func (rm *RouterMod) Start(dbmod *db.DbMod) chi.Router {
 	ur := dbmod.UserRepository
 	tr := dbmod.TaskRepository
 	md := middleware.NewMiddleware(ur, tr)
-	r := chi.NewRouter()
-
-	url := config.NewAppConf().API.URL
 	filesDir := config.NewAppConf().API.WorkDir
 	handlerFiles := http.FileServer(http.Dir(filesDir))
+
+	r := chi.NewRouter()
 	r.Handle("/docs/*", http.StripPrefix("/docs/", handlerFiles))
-	r.Get("/", version)
+
+	r.Get("/", swagger())
 	r.Get("/health", healthCheck)
-	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL(url+"/docs/swagger.yml"),
-	))
+	r.Get("/swagger/*", swagger())
 	TaskRouter(r, tr, md)
 	UserRouter(r, ur)
 
 	return r
 }
 
-func version(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, `{"version": "1.0.0"}`)
+func swagger() http.HandlerFunc {
+	url := config.NewAppConf().API.URL
+	return httpSwagger.Handler(
+		httpSwagger.URL(url + "/docs/swagger.yml"),
+	)
 }
 
 func healthCheck(w http.ResponseWriter, r *http.Request) {
