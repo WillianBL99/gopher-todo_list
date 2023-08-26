@@ -14,9 +14,9 @@ until docker exec pg_db psql -U $DB_USER -c '\q' > /dev/null 2>&1; do
     sleep 2
 done
 # verify if has backup
-if [ -f ./pkg/infra/db/postgres/backup.sql ]; then
+if [ -f ./internal/infra/db/postgres/backup.sql ]; then
     echo "Restoring database..."
-    docker exec -i pg_db psql -U $DB_USER -d $DB_NAME < ./pkg/infra/db/postgres/backup.sql
+    docker exec -i pg_db psql -U $DB_USER -d $DB_NAME < ./internal/infra/db/postgres/backup.sql
     if [ $? -eq 0 ]; then
         echo "Database restored!"
     else
@@ -25,7 +25,7 @@ if [ -f ./pkg/infra/db/postgres/backup.sql ]; then
     fi
 else
     echo "Creating database..."
-    docker exec -i pg_db psql -U $DB_USER -d $DB_NAME < ./pkg/infra/db/postgres/create-tables.sql
+    docker exec -i pg_db psql -U $DB_USER -d $DB_NAME < ./internal/infra/db/postgres/create-tables.sql
     if [ $? -eq 0 ]; then
         echo "Database created!"
     else

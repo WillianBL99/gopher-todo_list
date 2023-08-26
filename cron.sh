@@ -60,8 +60,8 @@ cleanup() {
 trap cleanup INT
 
 execute() {
-    chmod +x ./pkg/infra/db/postgres/backup-database.sh
-    ./pkg/infra/db/postgres/backup-database.sh
+    chmod +x ./internal/infra/db/postgres/backup-database.sh
+    ./internal/infra/db/postgres/backup-database.sh
 }
 
 if [ "$1" == "-o" ]; then
@@ -70,7 +70,7 @@ if [ "$1" == "-o" ]; then
 fi
 
 while true; do
-    #./pkg/infra/db/postgres/backup-database.sh
+    #./internal/infra/db/postgres/backup-database.sh
     execute
     remaining &
     bg_pid=$!  # Salva o PID do processo em segundo plano
