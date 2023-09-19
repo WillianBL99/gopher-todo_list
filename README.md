@@ -170,7 +170,7 @@ The repository has some scripts to automate some processes.
 - [ ] Add OAuth2 authentication
 - [x] Dockerize the API
 - [ ] Integrate with logging tools
-- [ ] Add CI/CD
+- [x] Add CI/CD
     
 ## :page_facing_up: License
 This project is under the [MIT license](https://github.com/WillianBL99/gopher-todo_list/blob/main/LICENSE)
